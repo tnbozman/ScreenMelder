@@ -1,2 +1,4 @@
 .vs/
 **/obj/**
+**/bin/**
+ScreenMelder/bin/Release/net6.0-windows/ScreenMelder.deps.json
