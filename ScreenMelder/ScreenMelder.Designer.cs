@@ -35,15 +35,19 @@
             host_groupBox = new GroupBox();
             host_connect_button = new Button();
             data_tabControl = new TabControl();
-            manualTab = new TabPage();
             logTab = new TabPage();
-            manual_textBox = new TextBox();
-            manual_send_button = new Button();
             textBox1 = new TextBox();
+            manualTab = new TabPage();
+            manual_send_button = new Button();
+            manual_textBox = new TextBox();
+            launch_roi_picker_button = new Button();
+            ocr_roi_groupBox = new GroupBox();
+            manual_payload_label = new Label();
             host_groupBox.SuspendLayout();
             data_tabControl.SuspendLayout();
-            manualTab.SuspendLayout();
             logTab.SuspendLayout();
+            manualTab.SuspendLayout();
+            ocr_roi_groupBox.SuspendLayout();
             SuspendLayout();
             // 
             // host_label
@@ -61,6 +65,7 @@
             host_input.Name = "host_input";
             host_input.Size = new Size(125, 27);
             host_input.TabIndex = 1;
+            host_input.Text = "127.0.0.1";
             // 
             // port_label
             // 
@@ -87,7 +92,7 @@
             host_groupBox.Controls.Add(host_input);
             host_groupBox.Location = new Point(621, 58);
             host_groupBox.Name = "host_groupBox";
-            host_groupBox.Size = new Size(167, 192);
+            host_groupBox.Size = new Size(167, 196);
             host_groupBox.TabIndex = 4;
             host_groupBox.TabStop = false;
             host_groupBox.Text = "Host Details";
@@ -108,20 +113,8 @@
             data_tabControl.Location = new Point(32, 29);
             data_tabControl.Name = "data_tabControl";
             data_tabControl.SelectedIndex = 0;
-            data_tabControl.Size = new Size(547, 346);
+            data_tabControl.Size = new Size(547, 384);
             data_tabControl.TabIndex = 5;
-            // 
-            // manualTab
-            // 
-            manualTab.Controls.Add(manual_send_button);
-            manualTab.Controls.Add(manual_textBox);
-            manualTab.Location = new Point(4, 29);
-            manualTab.Name = "manualTab";
-            manualTab.Padding = new Padding(3);
-            manualTab.Size = new Size(539, 313);
-            manualTab.TabIndex = 0;
-            manualTab.Text = "Manual";
-            manualTab.UseVisualStyleBackColor = true;
             // 
             // logTab
             // 
@@ -129,35 +122,76 @@
             logTab.Location = new Point(4, 29);
             logTab.Name = "logTab";
             logTab.Padding = new Padding(3);
-            logTab.Size = new Size(539, 313);
+            logTab.Size = new Size(539, 351);
             logTab.TabIndex = 1;
             logTab.Text = "Log";
             logTab.UseVisualStyleBackColor = true;
-            // 
-            // manual_textBox
-            // 
-            manual_textBox.Location = new Point(19, 38);
-            manual_textBox.Multiline = true;
-            manual_textBox.Name = "manual_textBox";
-            manual_textBox.Size = new Size(502, 225);
-            manual_textBox.TabIndex = 0;
-            // 
-            // manual_send_button
-            // 
-            manual_send_button.Location = new Point(412, 276);
-            manual_send_button.Name = "manual_send_button";
-            manual_send_button.Size = new Size(94, 29);
-            manual_send_button.TabIndex = 1;
-            manual_send_button.Text = "Send";
-            manual_send_button.UseVisualStyleBackColor = true;
             // 
             // textBox1
             // 
             textBox1.Location = new Point(6, 6);
             textBox1.Multiline = true;
             textBox1.Name = "textBox1";
-            textBox1.Size = new Size(527, 301);
+            textBox1.Size = new Size(527, 339);
             textBox1.TabIndex = 0;
+            // 
+            // manualTab
+            // 
+            manualTab.Controls.Add(manual_payload_label);
+            manualTab.Controls.Add(manual_send_button);
+            manualTab.Controls.Add(manual_textBox);
+            manualTab.Location = new Point(4, 29);
+            manualTab.Name = "manualTab";
+            manualTab.Padding = new Padding(3);
+            manualTab.Size = new Size(539, 351);
+            manualTab.TabIndex = 0;
+            manualTab.Text = "Manual";
+            manualTab.UseVisualStyleBackColor = true;
+            // 
+            // manual_send_button
+            // 
+            manual_send_button.Location = new Point(413, 302);
+            manual_send_button.Name = "manual_send_button";
+            manual_send_button.Size = new Size(94, 29);
+            manual_send_button.TabIndex = 1;
+            manual_send_button.Text = "Send";
+            manual_send_button.UseVisualStyleBackColor = true;
+            // 
+            // manual_textBox
+            // 
+            manual_textBox.Location = new Point(19, 46);
+            manual_textBox.Multiline = true;
+            manual_textBox.Name = "manual_textBox";
+            manual_textBox.Size = new Size(502, 250);
+            manual_textBox.TabIndex = 0;
+            // 
+            // launch_roi_picker_button
+            // 
+            launch_roi_picker_button.Location = new Point(30, 44);
+            launch_roi_picker_button.Name = "launch_roi_picker_button";
+            launch_roi_picker_button.Size = new Size(113, 29);
+            launch_roi_picker_button.TabIndex = 6;
+            launch_roi_picker_button.Text = "Draw Regions";
+            launch_roi_picker_button.UseVisualStyleBackColor = true;
+            // 
+            // ocr_roi_groupBox
+            // 
+            ocr_roi_groupBox.Controls.Add(launch_roi_picker_button);
+            ocr_roi_groupBox.Location = new Point(621, 281);
+            ocr_roi_groupBox.Name = "ocr_roi_groupBox";
+            ocr_roi_groupBox.Size = new Size(167, 118);
+            ocr_roi_groupBox.TabIndex = 7;
+            ocr_roi_groupBox.TabStop = false;
+            ocr_roi_groupBox.Text = "OCR ROIs";
+            // 
+            // manual_payload_label
+            // 
+            manual_payload_label.AutoSize = true;
+            manual_payload_label.Location = new Point(19, 13);
+            manual_payload_label.Name = "manual_payload_label";
+            manual_payload_label.Size = new Size(93, 20);
+            manual_payload_label.TabIndex = 2;
+            manual_payload_label.Text = "Json Payload";
             // 
             // ScreenMelder
             // 
@@ -166,15 +200,17 @@
             ClientSize = new Size(800, 450);
             Controls.Add(data_tabControl);
             Controls.Add(host_groupBox);
+            Controls.Add(ocr_roi_groupBox);
             Name = "ScreenMelder";
             Text = "Form1";
             host_groupBox.ResumeLayout(false);
             host_groupBox.PerformLayout();
             data_tabControl.ResumeLayout(false);
-            manualTab.ResumeLayout(false);
-            manualTab.PerformLayout();
             logTab.ResumeLayout(false);
             logTab.PerformLayout();
+            manualTab.ResumeLayout(false);
+            manualTab.PerformLayout();
+            ocr_roi_groupBox.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -192,5 +228,8 @@
         private Button manual_send_button;
         private TextBox manual_textBox;
         private TextBox textBox1;
+        private Button launch_roi_picker_button;
+        private GroupBox ocr_roi_groupBox;
+        private Label manual_payload_label;
     }
 }
