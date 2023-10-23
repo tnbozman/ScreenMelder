@@ -6,11 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ScreenMelder.Lib.ScreenCapture
+namespace ScreenMelder.Lib.ScreenCapture.Services
 {
     public class ScreenCaptureService : IScreenCaptureService
     {
-       
+
         public Bitmap Capture(Point upperLeftSource, Point upperLeftDestination, Size blockRegionSize)
         {
             var width = ScreenUtils.GetWidth(upperLeftSource, upperLeftDestination);

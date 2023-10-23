@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace ScreenMelder.Lib.ScreenCapture
 {
-    public class ApplicationCaptureService: IScreenCaptureService
+    public interface ICaptureService
     {
+        Bitmap Capture(string name);
     }
 }

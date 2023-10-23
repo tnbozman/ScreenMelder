@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 
 
-namespace ScreenMelder.Lib.ScreenCapture
+namespace ScreenMelder.Lib.ScreenCapture.Services
 {
     public interface IScreenCaptureService
     {
