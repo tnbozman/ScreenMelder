@@ -11,14 +11,14 @@ namespace ScreenMelder.Lib.ScreenCapture.Services
     public class ScreenCaptureService : IScreenCaptureService
     {
 
-        public Bitmap Capture(Point upperLeftSource, Point upperLeftDestination, Size blockRegionSize)
+        public Bitmap Capture(Point upperLeftSource, Point lowerRightDestination, Size blockRegionSize)
         {
-            var width = ScreenUtils.GetWidth(upperLeftSource, upperLeftDestination);
-            var height = ScreenUtils.GetHeight(upperLeftSource, upperLeftDestination);
+            var width = ScreenUtils.GetWidth(upperLeftSource, lowerRightDestination);
+            var height = ScreenUtils.GetHeight(upperLeftSource, lowerRightDestination);
             var bmp = new Bitmap(width, height);
             using (var graphics = Graphics.FromImage(bmp))
             {
-                graphics.CopyFromScreen(upperLeftSource, upperLeftDestination, bmp.Size);
+                graphics.CopyFromScreen(Point.Empty, Point.Empty, bmp.Size);
             }
             return bmp;
         }

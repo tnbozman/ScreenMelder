@@ -36,7 +36,10 @@ namespace ScreenMelder.Lib.ScreenCapture
         {
             
             Rectangle screenBounds = Screen.AllScreens[ScreenId].Bounds;
-            return _service.Capture(Point.Empty, Point.Empty, screenBounds.Size);
+            var upperLeftSource = new Point(screenBounds.X, screenBounds.Top);
+            var lowerRightSource = new Point(screenBounds.Right, screenBounds.Bottom);
+       
+            return _service.Capture(upperLeftSource, lowerRightSource, screenBounds.Size);
         }
 
     }

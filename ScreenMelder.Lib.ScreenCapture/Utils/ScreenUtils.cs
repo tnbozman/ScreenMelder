@@ -9,13 +9,13 @@ namespace ScreenMelder.Lib.ScreenCapture.Utils
 {
     public class ScreenUtils
     {
-        public static int GetWidth(Point upperLeftSource, Point upperLeftDestination)
+        public static int GetWidth(Point upperLeftSource, Point lowerRightDestination)
         {
-            return (upperLeftDestination.X - upperLeftSource.X);
+            return (lowerRightDestination.X - upperLeftSource.X);
         }
-        public static int GetHeight(Point upperLeftSource, Point upperLeftDestination)
+        public static int GetHeight(Point upperLeftSource, Point lowerRightDestination)
         {
-            return (upperLeftDestination.Y - upperLeftSource.Y);
+            return (lowerRightDestination.Y - upperLeftSource.Y);
         }
     }
 }
