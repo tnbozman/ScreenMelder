@@ -35,9 +35,5 @@ namespace ScreenMelder
             }
         }
 
-        private void ocrROIOptions_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
     }
 }

@@ -245,7 +245,6 @@ namespace ScreenMelder
             ocrROIOptions.Name = "ocrROIOptions";
             ocrROIOptions.Size = new Size(146, 23);
             ocrROIOptions.TabIndex = 8;
-            ocrROIOptions.SelectedIndexChanged += ocrROIOptions_SelectedIndexChanged;
             // 
             // ocrROIName
             // 

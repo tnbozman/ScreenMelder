@@ -2,6 +2,7 @@
 using ScreenMelder.Lib.Core.Services;
 using ScreenMelder.Lib.ScreenCapture;
 using ScreenMelder.Lib.ScreenCapture.Models;
+using ScreenMelder.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -36,10 +37,20 @@ namespace ScreenMelder
             this.MouseUp += ScreenRoiPicker_MouseUp;
             this.Paint += ScreenRoiPicker_Paint;
 
-            _desktopScreenshot = _screenCaptureService.Capture();
-            this.BackgroundImage = _desktopScreenshot;
+            RefreshScreenshot();
             this.WindowState = FormWindowState.Maximized; // covers the entire screen
             this.FormBorderStyle = FormBorderStyle.None;
+        }
+
+        private void RefreshScreenshot()
+        {
+            if (_desktopScreenshot != null)
+            {
+                _desktopScreenshot.Dispose();
+            }
+
+            _desktopScreenshot = _screenCaptureService.Capture();
+            this.BackgroundImage = _desktopScreenshot;
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -99,17 +110,6 @@ namespace ScreenMelder
         }
 
 
-        private void RefreshScreenshot()
-        {
-            if (_desktopScreenshot != null)
-            {
-                _desktopScreenshot.Dispose();
-            }
-
-            _desktopScreenshot = _screenCaptureService.Capture();
-            this.BackgroundImage = _desktopScreenshot;
-        }
-
         private void ScreenRoiPicker_MouseDown(object sender, MouseEventArgs e)
         {
             _startPoint = e.Location;
@@ -120,38 +120,17 @@ namespace ScreenMelder
         {
             if (_isDrawing && _startPoint.HasValue)
             {
-                _currentRegion = CreateRegion(_startPoint.Value, e);
+                _currentRegion = RoiUtil.CreateRegion(_startPoint.Value, e);
                 Invalidate();
             }
         }
 
-        private RoiConfig CreateRegion(Point point, MouseEventArgs e)
-        {
-            return new RoiConfig
-            {
-                X = point.X,
-                Y = point.Y,
-                Width = e.X - point.X,
-                Height = e.Y - point.Y
-            };
-        }
-
-        private RoiConfig UpdateRegion(RoiConfig region, Point point, MouseEventArgs e)
-        {
-            if (region == null)
-            {
-                return CreateRegion(point, e);
-            }
-            region.Width = e.X - point.X;
-            region.Height = e.Y - point.Y;
-            return region;
-        }
 
         private void ScreenRoiPicker_MouseUp(object sender, MouseEventArgs e)
         {
             if (_isDrawing && _startPoint.HasValue)
             {
-                _currentRegion = UpdateRegion(_currentRegion, _startPoint.Value, e);
+                _currentRegion = RoiUtil.UpdateRegion(_currentRegion, _startPoint.Value, e);
 
                 // Pop up the label input dialog
                 using (var dialog = new RoiLabelDialog())
