@@ -1,5 +1,7 @@
 ﻿using ScreenMelder.Lib.Core.Models;
 using ScreenMelder.Lib.Core.Services;
+using ScreenMelder.Lib.ScreenCapture;
+using ScreenMelder.Lib.ScreenCapture.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,18 +17,18 @@ namespace ScreenMelder
     public partial class ScreenRoiPicker : Form
     {
         private bool _isDrawing;
-        private int _screenId = 0;
         private Point? _startPoint = null;
         private RoiConfig _currentRegion = null;
         private List<RoiConfig> _regions = new List<RoiConfig>();
         private RoiConfig _trigger;
         private Bitmap _desktopScreenshot;
         private readonly IConfigurationService _configService;
-        private readonly IPayloadService _payloadService;
-        public ScreenRoiPicker(IConfigurationService configService, IPayloadService payloadService)
+        private readonly ICaptureService _screenCaptureService;
+   
+        public ScreenRoiPicker(IConfigurationService configService, ICaptureService captureService)
         {
             _configService = configService;
-            _payloadService = payloadService;
+            _screenCaptureService = captureService;
             InitializeComponent();
             this.DoubleBuffered = true;
             this.MouseDown += ScreenRoiPicker_MouseDown;
@@ -34,31 +36,10 @@ namespace ScreenMelder
             this.MouseUp += ScreenRoiPicker_MouseUp;
             this.Paint += ScreenRoiPicker_Paint;
 
-            _desktopScreenshot = CaptureDesktop(1);
+            _desktopScreenshot = _screenCaptureService.Capture();
             this.BackgroundImage = _desktopScreenshot;
             this.WindowState = FormWindowState.Maximized; // covers the entire screen
             this.FormBorderStyle = FormBorderStyle.None;
-        }
-
-        public Bitmap CaptureDesktop(int screenId)
-        {
-            _screenId = screenId;
-            if (Screen.AllScreens.Length <= screenId)
-            {
-                MessageBox.Show("There are not enough screens to capture, defaulting to Primary (screen 0).", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                screenId = 0;
-            }
-
-            _screenId = screenId;
-            var screen = Screen.AllScreens[screenId];
-            Bitmap screenshot = new Bitmap(screen.Bounds.Width, screen.Bounds.Height);
-
-            using (Graphics graphics = Graphics.FromImage(screenshot))
-            {
-                graphics.CopyFromScreen(screen.Bounds.X, screen.Bounds.Y, 0, 0, screen.Bounds.Size);
-            }
-
-            return screenshot;
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -98,7 +79,8 @@ namespace ScreenMelder
             {
                 Config config = new Config
                 {
-                    ScreenId = _screenId,
+                    CaptureType = (int)_screenCaptureService.CaptureType,
+                    CaptureName = _screenCaptureService.Name,
                     Trigger = _trigger,
                     Regions = _regions,
                 };
@@ -106,22 +88,12 @@ namespace ScreenMelder
                 string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
                 string configDir = Path.Combine(baseDirectory, "config");
                 string configPath = Path.Combine(baseDirectory, "config", "config.json");
-                string templatePath = Path.Combine(baseDirectory, "config", "gspro-template.json");
 
                 if (!Directory.Exists(configDir))
                 {
                     Directory.CreateDirectory(configDir);
                 }
                 _configService.SaveConfig(config, configPath);
-                var ocr = new Dictionary<string, string>();
-                ocr.Add("BallData.Speed", "120");
-                ocr.Add("BallData.SpinAxis", "13");
-                ocr.Add("BallData.TotalSpin", "2000");
-                ocr.Add("BallData.HLA", "0.1");
-                ocr.Add("BallData.VLA", "16");
-                ocr.Add("BallData.CarryDistance", "220");
-
-                _payloadService.PopulateTemplateWithRegions(templatePath, _regions, ocr);
             }
 
         }
@@ -134,7 +106,7 @@ namespace ScreenMelder
                 _desktopScreenshot.Dispose();
             }
 
-            _desktopScreenshot = CaptureDesktop(_screenId);
+            _desktopScreenshot = _screenCaptureService.Capture();
             this.BackgroundImage = _desktopScreenshot;
         }
 

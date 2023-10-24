@@ -1,4 +1,5 @@
-﻿using ScreenMelder.Lib.ScreenCapture.Services;
+﻿using ScreenMelder.Lib.ScreenCapture.Models;
+using ScreenMelder.Lib.ScreenCapture.Services;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -6,33 +7,36 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace ScreenMelder.Lib.ScreenCapture
 {
     public class FullScreenCapture: ICaptureService
     {
-        
+        public CaptureType CaptureType => CaptureType.SCREEN;
+        public int ScreenId { get; set; }   
+        public CaptureType Type { get; set; }
+        public string Name { get; set; }
+
         private readonly IScreenCaptureService _service;
-        public FullScreenCapture(IScreenCaptureService captureService)
+        public FullScreenCapture(IScreenCaptureService captureService, string captureName)
         {
             _service = captureService;
-        }
-        
-
-        public Bitmap Capture(string name)
-        {
+            Name = captureName;
             int screenId;
-            if(!int.TryParse(name, out screenId))
+            if (!int.TryParse(captureName, out screenId))
             {
                 screenId = 0;
             }
-            Rectangle screenBounds = Screen.AllScreens[screenId].Bounds;
-            Bitmap screenshot = new Bitmap(screenBounds.Width, screenBounds.Height);
-            using (Graphics g = Graphics.FromImage(screenshot))
-            {
-                g.CopyFromScreen(Point.Empty, Point.Empty, screenBounds.Size);
-            }
-            return screenshot;
+            ScreenId = screenId;
+        }
+        
+
+        public Bitmap Capture()
+        {
+            
+            Rectangle screenBounds = Screen.AllScreens[ScreenId].Bounds;
+            return _service.Capture(Point.Empty, Point.Empty, screenBounds.Size);
         }
 
     }

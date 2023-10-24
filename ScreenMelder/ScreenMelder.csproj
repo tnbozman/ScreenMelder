@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ScreenMelder.Lib.Core\ScreenMelder.Lib.Core.csproj" />
+    <ProjectReference Include="..\ScreenMelder.Lib.ScreenCapture\ScreenMelder.Lib.ScreenCapture.csproj" />
   </ItemGroup>
 
   <ItemGroup>
