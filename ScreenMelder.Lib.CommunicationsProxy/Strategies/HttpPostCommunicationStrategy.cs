@@ -14,6 +14,17 @@ namespace ScreenMelder.Lib.CommunicationsProxy.Strategies
         {
             _targetUri = targetUri;
         }
+
+        public bool Connect()
+        {
+            return true;
+        }
+
+        public bool Disconnect()
+        {
+            return false;
+        }
+
         public async Task SendJsonAsync(string json)
         {
             try

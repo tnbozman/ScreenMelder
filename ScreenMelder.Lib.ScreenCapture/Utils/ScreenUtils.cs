@@ -17,5 +17,14 @@ namespace ScreenMelder.Lib.ScreenCapture.Utils
         {
             return (lowerRightDestination.Y - upperLeftSource.Y);
         }
+
+        public static void DrawRectangleOnBitmap(Bitmap bitmap, int x, int y, int width, int height, string label, Pen drawColour, Brush textColour )
+        {
+            using (Graphics g = Graphics.FromImage(bitmap))
+            {
+                g.DrawRectangle(drawColour, x, y, width, height);
+                g.DrawString(label, SystemFonts.DefaultFont, textColour, x, y - 20);
+            }
+        }
     }
 }

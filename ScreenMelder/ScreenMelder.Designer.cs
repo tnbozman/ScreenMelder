@@ -44,16 +44,29 @@ namespace ScreenMelder
             manual_payload_label = new Label();
             manual_send_button = new Button();
             manual_textBox = new TextBox();
+            ocrTab = new TabPage();
+            overlayOutputEnable = new CheckBox();
+            stopOcrButton = new Button();
+            ocrStartButton = new Button();
             launch_roi_picker_button = new Button();
             ocr_roi_groupBox = new GroupBox();
             ocrROICaptureTargetOptions = new ComboBox();
             ocrROINameLabel = new Label();
             ocrRoiListLabel = new Label();
             ocrROIOptions = new ComboBox();
+            ocrRoiConfigLabel = new Label();
+            ocrTemplateLabel = new Label();
+            ocrOverlayLabel = new Label();
+            pollingLabel = new Label();
+            textBox2 = new TextBox();
+            textBox3 = new TextBox();
+            textBox4 = new TextBox();
+            textBox5 = new TextBox();
             host_groupBox.SuspendLayout();
             data_tabControl.SuspendLayout();
             logTab.SuspendLayout();
             manualTab.SuspendLayout();
+            ocrTab.SuspendLayout();
             ocr_roi_groupBox.SuspendLayout();
             SuspendLayout();
             // 
@@ -119,6 +132,7 @@ namespace ScreenMelder
             // 
             data_tabControl.Controls.Add(logTab);
             data_tabControl.Controls.Add(manualTab);
+            data_tabControl.Controls.Add(ocrTab);
             data_tabControl.Location = new Point(32, 29);
             data_tabControl.Name = "data_tabControl";
             data_tabControl.SelectedIndex = 0;
@@ -183,6 +197,58 @@ namespace ScreenMelder
             manual_textBox.Size = new Size(502, 249);
             manual_textBox.TabIndex = 0;
             // 
+            // ocrTab
+            // 
+            ocrTab.Controls.Add(textBox5);
+            ocrTab.Controls.Add(textBox4);
+            ocrTab.Controls.Add(textBox3);
+            ocrTab.Controls.Add(textBox2);
+            ocrTab.Controls.Add(pollingLabel);
+            ocrTab.Controls.Add(ocrOverlayLabel);
+            ocrTab.Controls.Add(ocrTemplateLabel);
+            ocrTab.Controls.Add(ocrRoiConfigLabel);
+            ocrTab.Controls.Add(overlayOutputEnable);
+            ocrTab.Controls.Add(stopOcrButton);
+            ocrTab.Controls.Add(ocrStartButton);
+            ocrTab.Location = new Point(4, 29);
+            ocrTab.Name = "ocrTab";
+            ocrTab.Padding = new Padding(3);
+            ocrTab.Size = new Size(539, 376);
+            ocrTab.TabIndex = 2;
+            ocrTab.Text = "OCR";
+            ocrTab.UseVisualStyleBackColor = true;
+            // 
+            // overlayOutputEnable
+            // 
+            overlayOutputEnable.AutoSize = true;
+            overlayOutputEnable.Location = new Point(190, 146);
+            overlayOutputEnable.Name = "overlayOutputEnable";
+            overlayOutputEnable.Size = new Size(180, 24);
+            overlayOutputEnable.TabIndex = 3;
+            overlayOutputEnable.Text = "Enable Overlay Output";
+            overlayOutputEnable.UseVisualStyleBackColor = true;
+            // 
+            // stopOcrButton
+            // 
+            stopOcrButton.Enabled = false;
+            stopOcrButton.Location = new Point(45, 50);
+            stopOcrButton.Name = "stopOcrButton";
+            stopOcrButton.Size = new Size(94, 29);
+            stopOcrButton.TabIndex = 2;
+            stopOcrButton.Text = "Stop";
+            stopOcrButton.UseVisualStyleBackColor = true;
+            stopOcrButton.Click += stopOcrButton_Click;
+            // 
+            // ocrStartButton
+            // 
+            ocrStartButton.Location = new Point(45, 15);
+            ocrStartButton.Name = "ocrStartButton";
+            ocrStartButton.Size = new Size(94, 29);
+            ocrStartButton.TabIndex = 1;
+            ocrStartButton.Text = "Start";
+            ocrStartButton.UseVisualStyleBackColor = true;
+            ocrStartButton.Click += ocrStartButton_Click;
+            // 
             // launch_roi_picker_button
             // 
             launch_roi_picker_button.Location = new Point(43, 139);
@@ -242,6 +308,74 @@ namespace ScreenMelder
             ocrROIOptions.TabIndex = 8;
             ocrROIOptions.SelectedIndexChanged += ocrROIOptions_SelectedIndexChanged;
             // 
+            // ocrRoiConfigLabel
+            // 
+            ocrRoiConfigLabel.AutoSize = true;
+            ocrRoiConfigLabel.Location = new Point(190, 15);
+            ocrRoiConfigLabel.Name = "ocrRoiConfigLabel";
+            ocrRoiConfigLabel.Size = new Size(111, 20);
+            ocrRoiConfigLabel.TabIndex = 4;
+            ocrRoiConfigLabel.Text = "Roi Config Path";
+            // 
+            // ocrTemplateLabel
+            // 
+            ocrTemplateLabel.AutoSize = true;
+            ocrTemplateLabel.Location = new Point(190, 77);
+            ocrTemplateLabel.Name = "ocrTemplateLabel";
+            ocrTemplateLabel.Size = new Size(159, 20);
+            ocrTemplateLabel.TabIndex = 5;
+            ocrTemplateLabel.Text = "Payload Template Path";
+            // 
+            // ocrOverlayLabel
+            // 
+            ocrOverlayLabel.AutoSize = true;
+            ocrOverlayLabel.Location = new Point(190, 179);
+            ocrOverlayLabel.Name = "ocrOverlayLabel";
+            ocrOverlayLabel.Size = new Size(149, 20);
+            ocrOverlayLabel.TabIndex = 6;
+            ocrOverlayLabel.Text = "Overlay Output Label";
+            // 
+            // pollingLabel
+            // 
+            pollingLabel.AutoSize = true;
+            pollingLabel.Location = new Point(190, 248);
+            pollingLabel.Name = "pollingLabel";
+            pollingLabel.Size = new Size(133, 20);
+            pollingLabel.TabIndex = 7;
+            pollingLabel.Text = "Polling Period (ms)";
+            // 
+            // textBox2
+            // 
+            textBox2.Location = new Point(190, 38);
+            textBox2.Name = "textBox2";
+            textBox2.Size = new Size(297, 27);
+            textBox2.TabIndex = 8;
+            textBox2.Text = "./config/config.json";
+            // 
+            // textBox3
+            // 
+            textBox3.Location = new Point(190, 100);
+            textBox3.Name = "textBox3";
+            textBox3.Size = new Size(297, 27);
+            textBox3.TabIndex = 9;
+            textBox3.Text = "./config/payload.json";
+            // 
+            // textBox4
+            // 
+            textBox4.Location = new Point(190, 202);
+            textBox4.Name = "textBox4";
+            textBox4.Size = new Size(297, 27);
+            textBox4.TabIndex = 10;
+            textBox4.Text = "./output/overlay.png";
+            // 
+            // textBox5
+            // 
+            textBox5.Location = new Point(190, 271);
+            textBox5.Name = "textBox5";
+            textBox5.Size = new Size(125, 27);
+            textBox5.TabIndex = 11;
+            textBox5.Text = "1000";
+            // 
             // ScreenMelder
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -259,6 +393,8 @@ namespace ScreenMelder
             logTab.PerformLayout();
             manualTab.ResumeLayout(false);
             manualTab.PerformLayout();
+            ocrTab.ResumeLayout(false);
+            ocrTab.PerformLayout();
             ocr_roi_groupBox.ResumeLayout(false);
             ocr_roi_groupBox.PerformLayout();
             ResumeLayout(false);
@@ -285,5 +421,17 @@ namespace ScreenMelder
         private Label ocrROINameLabel;
         private Label ocrRoiListLabel;
         private ComboBox ocrROICaptureTargetOptions;
+        private TabPage ocrTab;
+        private Button stopOcrButton;
+        private Button ocrStartButton;
+        private CheckBox overlayOutputEnable;
+        private Label ocrTemplateLabel;
+        private Label ocrRoiConfigLabel;
+        private Label ocrOverlayLabel;
+        private Label pollingLabel;
+        private TextBox textBox3;
+        private TextBox textBox2;
+        private TextBox textBox5;
+        private TextBox textBox4;
     }
 }

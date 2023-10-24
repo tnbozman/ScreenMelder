@@ -18,7 +18,7 @@ namespace ScreenMelder.Lib.ScreenCapture.Services
             var bmp = new Bitmap(width, height);
             using (var graphics = Graphics.FromImage(bmp))
             {
-                graphics.CopyFromScreen(Point.Empty, Point.Empty, bmp.Size);
+                graphics.CopyFromScreen(upperLeftSource.X, upperLeftSource.Y, 0, 0, bmp.Size);
             }
             return bmp;
         }

@@ -11,6 +11,7 @@ namespace ScreenMelder.Lib.CommunicationsProxy
     {
         private readonly ICommunicationStrategy _communicationStrategy;
 
+        public bool IsConnected { get; private set; }
         public CommunicationProxy(Uri targetUri)
         {
             // Determine which communication strategy to use based on the URI scheme.
@@ -26,6 +27,16 @@ namespace ScreenMelder.Lib.CommunicationsProxy
             {
                 throw new ArgumentException("Unsupported URI scheme: " + targetUri.Scheme);
             }
+        }
+
+        public void Connect()
+        {
+            IsConnected = _communicationStrategy.Connect();
+        }
+
+        public void Disconnect()
+        {
+            IsConnected = _communicationStrategy.Disconnect();
         }
 
         public void SendJson(string json)

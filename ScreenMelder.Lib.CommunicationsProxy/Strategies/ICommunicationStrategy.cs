@@ -8,6 +8,8 @@ namespace ScreenMelder.Lib.CommunicationsProxy.Strategies
 {
     public interface ICommunicationStrategy
     {
+        bool Connect();
+        bool Disconnect();
         Task SendJsonAsync(string json);
     }
 }

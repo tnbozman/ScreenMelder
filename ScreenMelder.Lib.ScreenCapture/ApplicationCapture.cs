@@ -25,5 +25,10 @@ namespace ScreenMelder.Lib.ScreenCapture
         {
             throw new NotImplementedException();
         }
+
+        public Bitmap CaptureRegion(Rectangle region)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

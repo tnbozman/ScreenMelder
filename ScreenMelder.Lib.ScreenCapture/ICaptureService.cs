@@ -12,5 +12,7 @@ namespace ScreenMelder.Lib.ScreenCapture
         CaptureType CaptureType { get; }
         string Name { get; set; }
         Bitmap Capture();
+
+        Bitmap CaptureRegion(Rectangle region);
     }
 }

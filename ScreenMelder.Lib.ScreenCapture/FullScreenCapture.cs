@@ -35,12 +35,15 @@ namespace ScreenMelder.Lib.ScreenCapture
         public Bitmap Capture()
         {
             
-            Rectangle screenBounds = Screen.AllScreens[ScreenId].Bounds;
-            var upperLeftSource = new Point(screenBounds.X, screenBounds.Top);
-            var lowerRightSource = new Point(screenBounds.Right, screenBounds.Bottom);
-       
-            return _service.Capture(upperLeftSource, lowerRightSource, screenBounds.Size);
+            Rectangle screenBounds = Screen.AllScreens[ScreenId].Bounds;       
+            return CaptureRegion(screenBounds);
         }
 
+        public Bitmap CaptureRegion(Rectangle region)
+        {
+            var upperLeftSource = new Point(region.X, region.Top);
+            var lowerRightSource = new Point(region.Right, region.Bottom);
+            return _service.Capture(upperLeftSource, lowerRightSource, region.Size);
+        }
     }
 }

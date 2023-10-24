@@ -18,6 +18,17 @@ namespace ScreenMelder.Lib.CommunicationsProxy.Strategies
             _serverIp = serverIp;
             _serverPort = serverPort;
         }
+
+        public bool Connect()
+        {
+            return true;
+        }
+
+        public bool Disconnect()
+        {
+            return false;
+        }
+
         public async Task SendJsonAsync(string json)
         {
             try

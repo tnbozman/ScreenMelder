@@ -2,6 +2,8 @@ using ScreenMelder.Lib.Core.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using ScreenMelder.Lib.ScreenCapture.Services;
+using ScreenMelder.Lib.OCR.Services;
+using ScreenMelder.Lib.ChangeDetection.Services;
 
 namespace ScreenMelder
 {
@@ -33,6 +35,9 @@ namespace ScreenMelder
             //services.AddLogging(configure => configure.SetMinimumLevel(LogLevel.Error).AddConsole());
             services.AddTransient<IConfigurationService, JsonConfigurationService>();
             services.AddTransient<IScreenCaptureService, ScreenCaptureService>();
+            services.AddTransient<IPayloadService, PayloadService>();
+            services.AddTransient<IOcrService, TesseractOcrService>();
+            services.AddTransient<IChangeDetectionService, BasicChangeDetectionService>();
         }
     }
 }
