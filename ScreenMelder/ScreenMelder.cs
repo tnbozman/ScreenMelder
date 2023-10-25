@@ -20,6 +20,7 @@ namespace ScreenMelder
         private readonly IConfigurationService _configurationService;
         private IOcrChangeDetectionService _ocrChangeDetectionService;
         private CommunicationProxy _communications;
+
         public ScreenMelder(ServiceProvider ServiceProvider)
         {
             _ServiceProvider = ServiceProvider;
@@ -65,6 +66,7 @@ namespace ScreenMelder
 
         private void host_connect_button_Click(object sender, EventArgs e)
         {
+
             ConnectCommunications();
         }
 
@@ -79,6 +81,8 @@ namespace ScreenMelder
             if (!_communications.IsConnected)
             {
                 _communications.Connect();
+                host_connect_button.Enabled = _communications.IsConnected;
+                host_connect_button.Enabled = !host_connect_button.Enabled;
             }
         }
 
@@ -123,6 +127,13 @@ namespace ScreenMelder
         private void manual_send_button_Click(object sender, EventArgs e)
         {
             _communications.SendJson(manual_textBox.Text);
+        }
+
+        private void host_disconnect_button_Click(object sender, EventArgs e)
+        {
+            _communications.Disconnect();
+            host_connect_button.Enabled = true;
+            host_disconnect_button.Enabled = false;
         }
     }
 }

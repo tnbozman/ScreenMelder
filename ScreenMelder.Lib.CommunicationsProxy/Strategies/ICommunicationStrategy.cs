@@ -11,5 +11,6 @@ namespace ScreenMelder.Lib.CommunicationsProxy.Strategies
         bool Connect();
         bool Disconnect();
         Task SendJsonAsync(string json);
+        void SendJson(string json);
     }
 }

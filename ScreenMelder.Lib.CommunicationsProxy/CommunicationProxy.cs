@@ -42,7 +42,7 @@ namespace ScreenMelder.Lib.CommunicationsProxy
         public void SendJson(string json)
         {
             // Use the selected strategy to send the JSON payload.
-            _communicationStrategy.SendJsonAsync(json);
+            _communicationStrategy.SendJson(json);
         }
     }
 }

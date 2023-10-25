@@ -25,6 +25,11 @@ namespace ScreenMelder.Lib.CommunicationsProxy.Strategies
             return false;
         }
 
+        public void SendJson(string json)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task SendJsonAsync(string json)
         {
             try
