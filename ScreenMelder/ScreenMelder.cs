@@ -90,7 +90,11 @@ namespace ScreenMelder
 
         private void ocrStartButton_Click(object sender, EventArgs e)
         {
-            stopOcrButton.Enabled = false;
+            stopOcrButton.Enabled = true;
+            stopOcrButton.ForeColor = Color.Black;
+            ocrStartButton.Enabled = false;
+            ocrStartButton.ForeColor = Color.Green;
+
             ConnectCommunications();
             _ocrChangeDetectionService = new OcrChangeDetectionService(_screenCaptureFactory,
                                                                         _ServiceProvider.GetRequiredService<IOcrService>(),
@@ -100,10 +104,25 @@ namespace ScreenMelder
                                                                         _communications);
 
 
+            _ocrChangeDetectionService.Start(BuildPath(configPath.Text), BuildPath(configPath.Text), BuildPath(overlayOutputPath.Text), int.Parse(pollingPeriod.Value.ToString()));
+        }
+
+        private string BuildPath(string path)
+        {
+            if (path.StartsWith('/'))
+            {
+                string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+                return Path.Combine(baseDirectory, "path");
+            }
+            return path;
         }
 
         private void stopOcrButton_Click(object sender, EventArgs e)
         {
+            stopOcrButton.Enabled = false;
+            stopOcrButton.ForeColor = Color.Red;
+            ocrStartButton.Enabled = true;
+            ocrStartButton.ForeColor = Color.Black;
             _ocrChangeDetectionService.Stop();
         }
     }

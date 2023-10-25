@@ -41,8 +41,10 @@ namespace ScreenMelder.Lib.Core.Services
             var config = _configService.ReadConfig(configPath);
             // TODO: support application
             var captureService = _captureFactory.GetCapture(CaptureType.SCREEN, config.CaptureName);
-            SaveImageWithRegions(captureService, overlayOutputPath, config.Regions, config.Trigger);
-          
+            if (overlayOutputPath != null)
+            {
+                SaveImageWithRegions(captureService, overlayOutputPath, config.Regions, config.Trigger);
+            }
 
             Bitmap previousTrigger = null;
             running = true;
