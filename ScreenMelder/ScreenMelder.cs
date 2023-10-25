@@ -103,18 +103,12 @@ namespace ScreenMelder
                                                                         _ServiceProvider.GetRequiredService<IPayloadService>(),
                                                                         _communications);
 
-
-            _ocrChangeDetectionService.Start(BuildPath(configPath.Text), BuildPath(configPath.Text), BuildPath(overlayOutputPath.Text), int.Parse(pollingPeriod.Value.ToString()));
+            _ocrChangeDetectionService.Start(BuildPath(configPath.Text), BuildPath(payloadTemplatePath.Text), overlayOutputEnable.Checked ? BuildPath(overlayOutputPath.Text) : null, int.Parse(pollingPeriod.Value.ToString()));
         }
 
         private string BuildPath(string path)
         {
-            if (path.StartsWith('/'))
-            {
-                string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-                return Path.Combine(baseDirectory, "path");
-            }
-            return path;
+            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
         }
 
         private void stopOcrButton_Click(object sender, EventArgs e)
@@ -124,6 +118,11 @@ namespace ScreenMelder
             ocrStartButton.Enabled = true;
             ocrStartButton.ForeColor = Color.Black;
             _ocrChangeDetectionService.Stop();
+        }
+
+        private void manual_send_button_Click(object sender, EventArgs e)
+        {
+            _communications.SendJson(manual_textBox.Text);
         }
     }
 }

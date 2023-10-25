@@ -23,6 +23,13 @@ namespace ScreenMelder.Lib.Core.Services
         private readonly IPayloadService _payloadService;
         private readonly CommunicationProxy _commsProxy;
         private bool running = false;
+        private Thread captureThread;
+        private Config? config;
+        private string templatePath;
+        private string overlayOutputPath;
+        private int period;
+        private ICaptureService captureService;
+
         public OcrChangeDetectionService(ScreenCaptureFactory captureFactory, 
                                             IOcrService ocrService, 
                                             IConfigurationService configService, 
@@ -38,14 +45,25 @@ namespace ScreenMelder.Lib.Core.Services
         }
         public void Start(string configPath, string templatePath, string overlayOutputPath, int period)
         {
-            var config = _configService.ReadConfig(configPath);
+            config = _configService.ReadConfig(configPath);
+            this.templatePath = templatePath;
+            this.overlayOutputPath = overlayOutputPath;
+            this.period = period;
             // TODO: support application
-            var captureService = _captureFactory.GetCapture(CaptureType.SCREEN, config.CaptureName);
+            captureService = _captureFactory.GetCapture(CaptureType.SCREEN, config.CaptureName);
             if (overlayOutputPath != null)
             {
                 SaveImageWithRegions(captureService, overlayOutputPath, config.Regions, config.Trigger);
             }
 
+            captureThread = new Thread(Process);
+            captureThread.IsBackground = true;
+            captureThread.Start();
+
+        }
+
+        private void Process(object input)
+        {
             Bitmap previousTrigger = null;
             running = true;
             while (running)
@@ -59,16 +77,19 @@ namespace ScreenMelder.Lib.Core.Services
                     {
                         var regionCapture = captureService.CaptureRegion(new Rectangle(region.X, region.Y, region.Width, region.Height));
                         var result = _ocrService.ProcessImage(regionCapture);
+                        result = result.Replace("\n", "").TrimEnd();
                         Console.WriteLine($"{region.Label}: {result}");
                         ocrValues.Add(region.Label, result);
                     }
-                    var payload = _payloadService.PopulateTemplateWithRegions(templatePath, config.Regions, ocrValues);
-                    _commsProxy.SendJson(payload);
+                    if(ocrValues.All(a => a.Value.Length > 0))
+                    {
+                        var payload = _payloadService.PopulateTemplateWithRegions(templatePath, config.Regions, ocrValues);
+                        _commsProxy.SendJson(payload);
+                    } 
                 }
 
                 Thread.Sleep(period);
             }
-
         }
 
         private void SaveImageWithRegions(ICaptureService captureService, string path, List<RoiConfig> regions, RoiConfig trigger)

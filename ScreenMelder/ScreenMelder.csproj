@@ -20,4 +20,10 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.4" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="tessdata\eng.traineddata">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
