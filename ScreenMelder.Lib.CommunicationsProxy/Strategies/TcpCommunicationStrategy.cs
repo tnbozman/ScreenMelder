@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ScreenMelder.Lib.CommunicationsProxy.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -93,9 +94,18 @@ namespace ScreenMelder.Lib.CommunicationsProxy.Strategies
             {
                 if(client != null && client.Connected)
                 {
-                    byte[] jsonBytes = Encoding.UTF8.GetBytes(json);
-                    client.Send(jsonBytes);
-                    Console.WriteLine("JSON payload sent via TCP: " + json);
+                    string unprettyJson;
+                    if(PayloadUtils.IsValidJson(json, out unprettyJson))
+                    {
+                        byte[] jsonBytes = Encoding.UTF8.GetBytes(unprettyJson);
+                        client.Send(jsonBytes);
+                        Console.WriteLine("JSON payload sent via TCP: " + unprettyJson);
+                    }
+                    else
+                    {
+                        Console.WriteLine("JSON payload was not json: " + json);
+                    }
+                    
                 }
                 else
                 {
