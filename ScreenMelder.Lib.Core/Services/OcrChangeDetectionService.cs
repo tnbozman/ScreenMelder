@@ -96,7 +96,7 @@ namespace ScreenMelder.Lib.Core.Services
                     
                     if(ocrValues.All(a => a.Value != null && a.Value.Length > 0))
                     {
-                        // TODO: need to fix counter as the duplicate read won't work.
+                   
                         // need to pull counter into a new payload service function that can be used by itself
                         ocrValues.Add(captureCountLabel, counter.ToString());
                         var payload = _payloadService.PopulateTemplateWithRegions(templatePath, config.Regions, ocrValues);
