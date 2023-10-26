@@ -9,6 +9,12 @@ namespace ScreenMelder.Lib.CommunicationsProxy
 {
     public class CommunicationProxy
     {
+        public string CleanupRegex => _communicationStrategy.CleanupRegex;
+        public void SetCleanupRegex(string regex)
+        {
+            _communicationStrategy.CleanupRegex
+                = regex;
+        }
         private readonly ICommunicationStrategy _communicationStrategy;
 
         public bool IsConnected { get; private set; }

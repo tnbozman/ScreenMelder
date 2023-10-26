@@ -17,12 +17,14 @@ namespace ScreenMelder.Lib.CommunicationsProxy.Strategies
         private readonly int _serverPort;
         private readonly int _threadTimeout = 1000;
         private Socket client { get; set; }
+        public string CleanupRegex { get; set; }
 
         // private readonly ILogger<TcpCommunicationStrategy> _logger;
         public TcpCommunicationStrategy(string serverIp, int serverPort)
         {
             _serverIp = serverIp;
             _serverPort = serverPort;
+            CleanupRegex = null;
         }
 
         public bool Connect()
@@ -95,7 +97,7 @@ namespace ScreenMelder.Lib.CommunicationsProxy.Strategies
                 if(client != null && client.Connected)
                 {
                     string unprettyJson;
-                    if(PayloadUtils.IsValidJson(json, out unprettyJson))
+                    if(PayloadUtils.IsValidJson(json, out unprettyJson, CleanupRegex))
                     {
                         byte[] jsonBytes = Encoding.UTF8.GetBytes(unprettyJson);
                         client.Send(jsonBytes);

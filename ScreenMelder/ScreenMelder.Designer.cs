@@ -40,15 +40,20 @@ namespace ScreenMelder
             host_connect_button = new Button();
             data_tabControl = new TabControl();
             ocrTab = new TabPage();
-            pollingPeriod = new NumericUpDown();
+            captureCount = new TextBox();
+            captureCountLabel = new Label();
+            ocrPayloadRegexLabel = new Label();
+            ocrPayloadRegex = new TextBox();
             overlayOutputPath = new TextBox();
+            ocrOverlayLabel = new Label();
+            overlayOutputGroupBox = new GroupBox();
+            overlayOutputEnable = new CheckBox();
+            pollingPeriod = new NumericUpDown();
             payloadTemplatePath = new TextBox();
             configPath = new TextBox();
             pollingLabel = new Label();
-            ocrOverlayLabel = new Label();
             ocrTemplateLabel = new Label();
             ocrRoiConfigLabel = new Label();
-            overlayOutputEnable = new CheckBox();
             stopOcrButton = new Button();
             ocrStartButton = new Button();
             logTab = new TabPage();
@@ -66,6 +71,7 @@ namespace ScreenMelder
             host_groupBox.SuspendLayout();
             data_tabControl.SuspendLayout();
             ocrTab.SuspendLayout();
+            overlayOutputGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pollingPeriod).BeginInit();
             logTab.SuspendLayout();
             manualTab.SuspendLayout();
@@ -155,15 +161,19 @@ namespace ScreenMelder
             // 
             // ocrTab
             // 
-            ocrTab.Controls.Add(pollingPeriod);
+            ocrTab.Controls.Add(captureCount);
+            ocrTab.Controls.Add(captureCountLabel);
+            ocrTab.Controls.Add(ocrPayloadRegexLabel);
+            ocrTab.Controls.Add(ocrPayloadRegex);
             ocrTab.Controls.Add(overlayOutputPath);
+            ocrTab.Controls.Add(ocrOverlayLabel);
+            ocrTab.Controls.Add(overlayOutputGroupBox);
+            ocrTab.Controls.Add(pollingPeriod);
             ocrTab.Controls.Add(payloadTemplatePath);
             ocrTab.Controls.Add(configPath);
             ocrTab.Controls.Add(pollingLabel);
-            ocrTab.Controls.Add(ocrOverlayLabel);
             ocrTab.Controls.Add(ocrTemplateLabel);
             ocrTab.Controls.Add(ocrRoiConfigLabel);
-            ocrTab.Controls.Add(overlayOutputEnable);
             ocrTab.Controls.Add(stopOcrButton);
             ocrTab.Controls.Add(ocrStartButton);
             ocrTab.Location = new Point(4, 29);
@@ -174,61 +184,117 @@ namespace ScreenMelder
             ocrTab.Text = "OCR";
             ocrTab.UseVisualStyleBackColor = true;
             // 
-            // pollingPeriod
+            // captureCount
             // 
-            pollingPeriod.Location = new Point(279, 255);
-            pollingPeriod.Maximum = new decimal(new int[] { 10000, 0, 0, 0 });
-            pollingPeriod.Name = "pollingPeriod";
-            pollingPeriod.Size = new Size(150, 27);
-            pollingPeriod.TabIndex = 12;
-            pollingPeriod.Value = new decimal(new int[] { 1000, 0, 0, 0 });
+            captureCount.Location = new Point(297, 107);
+            captureCount.Name = "captureCount";
+            captureCount.Size = new Size(199, 27);
+            captureCount.TabIndex = 17;
+            captureCount.Text = "data.shotnumber";
+            // 
+            // captureCountLabel
+            // 
+            captureCountLabel.AutoSize = true;
+            captureCountLabel.Location = new Point(298, 84);
+            captureCountLabel.Name = "captureCountLabel";
+            captureCountLabel.Size = new Size(144, 20);
+            captureCountLabel.TabIndex = 16;
+            captureCountLabel.Text = "Capture Count Label";
+            // 
+            // ocrPayloadRegexLabel
+            // 
+            ocrPayloadRegexLabel.AutoSize = true;
+            ocrPayloadRegexLabel.Location = new Point(297, 24);
+            ocrPayloadRegexLabel.Name = "ocrPayloadRegexLabel";
+            ocrPayloadRegexLabel.Size = new Size(164, 20);
+            ocrPayloadRegexLabel.TabIndex = 15;
+            ocrPayloadRegexLabel.Text = "Payload Cleanup Regex";
+            // 
+            // ocrPayloadRegex
+            // 
+            ocrPayloadRegex.Location = new Point(297, 47);
+            ocrPayloadRegex.Name = "ocrPayloadRegex";
+            ocrPayloadRegex.Size = new Size(199, 27);
+            ocrPayloadRegex.TabIndex = 14;
+            ocrPayloadRegex.Text = "\\s+";
+            ocrPayloadRegex.TextChanged += ocrPayloadRegex_TextChanged;
             // 
             // overlayOutputPath
             // 
-            overlayOutputPath.Location = new Point(133, 211);
+            overlayOutputPath.Location = new Point(20, 235);
             overlayOutputPath.Name = "overlayOutputPath";
-            overlayOutputPath.Size = new Size(297, 27);
+            overlayOutputPath.Size = new Size(221, 27);
             overlayOutputPath.TabIndex = 10;
             overlayOutputPath.Text = "output/overlay.png";
             // 
+            // ocrOverlayLabel
+            // 
+            ocrOverlayLabel.AutoSize = true;
+            ocrOverlayLabel.Location = new Point(20, 212);
+            ocrOverlayLabel.Name = "ocrOverlayLabel";
+            ocrOverlayLabel.Size = new Size(37, 20);
+            ocrOverlayLabel.TabIndex = 6;
+            ocrOverlayLabel.Text = "Path";
+            // 
+            // overlayOutputGroupBox
+            // 
+            overlayOutputGroupBox.Controls.Add(overlayOutputEnable);
+            overlayOutputGroupBox.Location = new Point(6, 143);
+            overlayOutputGroupBox.Name = "overlayOutputGroupBox";
+            overlayOutputGroupBox.Size = new Size(244, 127);
+            overlayOutputGroupBox.TabIndex = 13;
+            overlayOutputGroupBox.TabStop = false;
+            overlayOutputGroupBox.Text = "Overlay Output";
+            overlayOutputGroupBox.Enter += groupBox1_Enter;
+            // 
+            // overlayOutputEnable
+            // 
+            overlayOutputEnable.AutoSize = true;
+            overlayOutputEnable.Location = new Point(14, 30);
+            overlayOutputEnable.Name = "overlayOutputEnable";
+            overlayOutputEnable.Size = new Size(76, 24);
+            overlayOutputEnable.TabIndex = 3;
+            overlayOutputEnable.Text = "Enable";
+            overlayOutputEnable.UseVisualStyleBackColor = true;
+            // 
+            // pollingPeriod
+            // 
+            pollingPeriod.Location = new Point(166, 276);
+            pollingPeriod.Maximum = new decimal(new int[] { 10000, 0, 0, 0 });
+            pollingPeriod.Name = "pollingPeriod";
+            pollingPeriod.Size = new Size(84, 27);
+            pollingPeriod.TabIndex = 12;
+            pollingPeriod.Value = new decimal(new int[] { 1000, 0, 0, 0 });
+            // 
             // payloadTemplatePath
             // 
-            payloadTemplatePath.Location = new Point(133, 109);
+            payloadTemplatePath.Location = new Point(20, 109);
             payloadTemplatePath.Name = "payloadTemplatePath";
-            payloadTemplatePath.Size = new Size(297, 27);
+            payloadTemplatePath.Size = new Size(221, 27);
             payloadTemplatePath.TabIndex = 9;
             payloadTemplatePath.Text = "config/payload.json";
             // 
             // configPath
             // 
-            configPath.Location = new Point(133, 47);
+            configPath.Location = new Point(20, 47);
             configPath.Name = "configPath";
-            configPath.Size = new Size(297, 27);
+            configPath.Size = new Size(221, 27);
             configPath.TabIndex = 8;
             configPath.Text = "config/config.json";
             // 
             // pollingLabel
             // 
             pollingLabel.AutoSize = true;
-            pollingLabel.Location = new Point(133, 257);
+            pollingLabel.Location = new Point(20, 278);
             pollingLabel.Name = "pollingLabel";
             pollingLabel.Size = new Size(133, 20);
             pollingLabel.TabIndex = 7;
             pollingLabel.Text = "Polling Period (ms)";
             // 
-            // ocrOverlayLabel
-            // 
-            ocrOverlayLabel.AutoSize = true;
-            ocrOverlayLabel.Location = new Point(133, 188);
-            ocrOverlayLabel.Name = "ocrOverlayLabel";
-            ocrOverlayLabel.Size = new Size(149, 20);
-            ocrOverlayLabel.TabIndex = 6;
-            ocrOverlayLabel.Text = "Overlay Output Label";
-            // 
             // ocrTemplateLabel
             // 
             ocrTemplateLabel.AutoSize = true;
-            ocrTemplateLabel.Location = new Point(133, 85);
+            ocrTemplateLabel.Location = new Point(20, 85);
             ocrTemplateLabel.Name = "ocrTemplateLabel";
             ocrTemplateLabel.Size = new Size(159, 20);
             ocrTemplateLabel.TabIndex = 5;
@@ -237,21 +303,11 @@ namespace ScreenMelder
             // ocrRoiConfigLabel
             // 
             ocrRoiConfigLabel.AutoSize = true;
-            ocrRoiConfigLabel.Location = new Point(133, 24);
+            ocrRoiConfigLabel.Location = new Point(20, 24);
             ocrRoiConfigLabel.Name = "ocrRoiConfigLabel";
             ocrRoiConfigLabel.Size = new Size(111, 20);
             ocrRoiConfigLabel.TabIndex = 4;
             ocrRoiConfigLabel.Text = "Roi Config Path";
-            // 
-            // overlayOutputEnable
-            // 
-            overlayOutputEnable.AutoSize = true;
-            overlayOutputEnable.Location = new Point(133, 155);
-            overlayOutputEnable.Name = "overlayOutputEnable";
-            overlayOutputEnable.Size = new Size(180, 24);
-            overlayOutputEnable.TabIndex = 3;
-            overlayOutputEnable.Text = "Enable Overlay Output";
-            overlayOutputEnable.UseVisualStyleBackColor = true;
             // 
             // stopOcrButton
             // 
@@ -409,6 +465,8 @@ namespace ScreenMelder
             data_tabControl.ResumeLayout(false);
             ocrTab.ResumeLayout(false);
             ocrTab.PerformLayout();
+            overlayOutputGroupBox.ResumeLayout(false);
+            overlayOutputGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pollingPeriod).EndInit();
             logTab.ResumeLayout(false);
             logTab.PerformLayout();
@@ -453,5 +511,10 @@ namespace ScreenMelder
         private TextBox overlayOutputPath;
         private NumericUpDown pollingPeriod;
         private Button host_disconnect_button;
+        private GroupBox overlayOutputGroupBox;
+        private Label ocrPayloadRegexLabel;
+        private TextBox ocrPayloadRegex;
+        private Label captureCountLabel;
+        private TextBox captureCount;
     }
 }

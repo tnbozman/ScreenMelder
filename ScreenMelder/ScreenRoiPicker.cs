@@ -140,6 +140,7 @@ namespace ScreenMelder
                     {
                         // Store the entered label with the region
                         _currentRegion.Label = dialog.EnteredLabel; // Assuming you've exposed the TextBox value through a property named EnteredLabel in LabelInputDialog
+                        _currentRegion.DataType = dialog.SelectedDataType;
                         if (_currentRegion.Label == "trigger")
                         {
                             _trigger = _currentRegion;

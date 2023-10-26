@@ -9,6 +9,7 @@ using ScreenMelder.Lib.ScreenCapture.Services;
 using ScreenMelder.Lib.ScreenCapture.Services.CaptureTarget;
 using ScreenMelder.Models;
 using System;
+using System.Text.Json;
 
 namespace ScreenMelder
 {
@@ -81,6 +82,7 @@ namespace ScreenMelder
             if (!_communications.IsConnected)
             {
                 _communications.Connect();
+                _communications.SetCleanupRegex(string.IsNullOrEmpty(ocrPayloadRegex.Text) ? null : ocrPayloadRegex.Text);
                 host_connect_button.Enabled = _communications.IsConnected;
                 host_connect_button.Enabled = !host_connect_button.Enabled;
             }
@@ -107,7 +109,7 @@ namespace ScreenMelder
                                                                         _ServiceProvider.GetRequiredService<IPayloadService>(),
                                                                         _communications);
 
-            _ocrChangeDetectionService.Start(BuildPath(configPath.Text), BuildPath(payloadTemplatePath.Text), overlayOutputEnable.Checked ? BuildPath(overlayOutputPath.Text) : null, int.Parse(pollingPeriod.Value.ToString()));
+            _ocrChangeDetectionService.Start(BuildPath(configPath.Text), BuildPath(payloadTemplatePath.Text), overlayOutputEnable.Checked ? BuildPath(overlayOutputPath.Text) : null, int.Parse(pollingPeriod.Value.ToString()), captureCount.Text);
         }
 
         private string BuildPath(string path)
@@ -134,6 +136,19 @@ namespace ScreenMelder
             _communications.Disconnect();
             host_connect_button.Enabled = true;
             host_disconnect_button.Enabled = false;
+        }
+
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void ocrPayloadRegex_TextChanged(object sender, EventArgs e)
+        {
+            if(_communications != null)
+            {
+                _communications.SetCleanupRegex(ocrPayloadRegex.Text);
+            }
         }
     }
 }

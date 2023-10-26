@@ -8,11 +8,13 @@ namespace ScreenMelder.Lib.CommunicationsProxy.Strategies
 {
     public class HttpPostCommunicationStrategy: ICommunicationStrategy
     {
+        public string CleanupRegex { get; set;  }
         private readonly Uri _targetUri;
 
         public HttpPostCommunicationStrategy(Uri targetUri)
         {
             _targetUri = targetUri;
+            CleanupRegex = null;
         }
 
         public bool Connect()

@@ -1,15 +1,18 @@
 ﻿using ScreenMelder.Lib.ChangeDetection.Services;
 using ScreenMelder.Lib.CommunicationsProxy;
 using ScreenMelder.Lib.Core.Models;
+using ScreenMelder.Lib.Core.Util;
 using ScreenMelder.Lib.OCR.Services;
 using ScreenMelder.Lib.ScreenCapture;
 using ScreenMelder.Lib.ScreenCapture.Models;
 using ScreenMelder.Lib.ScreenCapture.Services;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace ScreenMelder.Lib.Core.Services
@@ -27,6 +30,7 @@ namespace ScreenMelder.Lib.Core.Services
         private Config? config;
         private string templatePath;
         private string overlayOutputPath;
+        private string captureCountLabel;
         private int period;
         private ICaptureService captureService;
 
@@ -43,12 +47,13 @@ namespace ScreenMelder.Lib.Core.Services
             _payloadService = payloadService;
             _commsProxy = commsProxy;
         }
-        public void Start(string configPath, string templatePath, string overlayOutputPath, int period)
+        public void Start(string configPath, string templatePath, string overlayOutputPath, int period, string captureCountLabel)
         {
             config = _configService.ReadConfig(configPath);
             this.templatePath = templatePath;
             this.overlayOutputPath = overlayOutputPath;
             this.period = period;
+            this.captureCountLabel = captureCountLabel;
             // TODO: support application
             captureService = _captureFactory.GetCapture(CaptureType.SCREEN, config.CaptureName);
             if (overlayOutputPath != null)
@@ -65,6 +70,8 @@ namespace ScreenMelder.Lib.Core.Services
         private void Process(object input)
         {
             Bitmap previousTrigger = null;
+            string previousPayload = null;
+            int counter = 1;
             running = true;
             while (running)
             {
@@ -77,14 +84,33 @@ namespace ScreenMelder.Lib.Core.Services
                     {
                         var regionCapture = captureService.CaptureRegion(new Rectangle(region.X, region.Y, region.Width, region.Height));
                         var result = _ocrService.ProcessImage(regionCapture);
-                        result = result.Replace("\n", "").TrimEnd();
+                        if(region.DataType != null)
+                        {
+                            result = result.Replace("\n", "").TrimEnd();
+                            result = DataTypeParser.Validate(result, region.DataType);
+                        }
+                       
                         Console.WriteLine($"{region.Label}: {result}");
                         ocrValues.Add(region.Label, result);
                     }
-                    if(ocrValues.All(a => a.Value.Length > 0))
+                    
+                    if(ocrValues.All(a => a.Value != null && a.Value.Length > 0))
                     {
+                        // TODO: need to fix counter as the duplicate read won't work.
+                        // need to pull counter into a new payload service function that can be used by itself
+                        ocrValues.Add(captureCountLabel, counter.ToString());
                         var payload = _payloadService.PopulateTemplateWithRegions(templatePath, config.Regions, ocrValues);
-                        _commsProxy.SendJson(payload);
+                        // ignore duplicate reads
+                        if(previousPayload != payload) {
+                            // add counter if specified by the ui
+                            if (!string.IsNullOrEmpty(captureCountLabel))
+                            {
+                                payload = _payloadService.AddCounterToTemplate(templatePath, payload, captureCountLabel, counter);
+                            }
+                            _commsProxy.SendJson(payload);
+                            counter++;
+                        }
+                        
                     } 
                 }
 

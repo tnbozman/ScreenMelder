@@ -6,11 +6,19 @@ using System.Text;
 using System.Text.Json.Nodes;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Drawing;
+using ScreenMelder.Lib.Core.Util;
 
 namespace ScreenMelder.Lib.Core.Services
 {
     public class PayloadService: IPayloadService
     {
+        public string AddCounterToTemplate(string templatePath, string template, string captureCountLabel, int count)
+        {
+            var templateJson = StringToJson(template);
+            SubstituteValueInTemplate(templateJson, captureCountLabel, count.ToString());
+            return SaveTemplate(templateJson, templatePath);
+        }
 
         public string PopulateTemplateWithRegions(string templatePath, List<RoiConfig> regions, Dictionary<string, string> ocrValues)
         {
@@ -31,6 +39,11 @@ namespace ScreenMelder.Lib.Core.Services
         private JsonNode LoadTemplate(string templatePath)
         {
             var jsonString = File.ReadAllText(templatePath);
+            return StringToJson(jsonString);
+        }
+
+        private JsonNode StringToJson(string jsonString)
+        {
             return JsonNode.Parse(jsonString);
         }
 

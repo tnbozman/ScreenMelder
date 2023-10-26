@@ -11,6 +11,7 @@ namespace ScreenMelder.Lib.Core.Models
         STRING = 1,
         FLOAT = 2,
         BOOLEAN = 3,
+        INTEGER = 4
 
     }
 }
