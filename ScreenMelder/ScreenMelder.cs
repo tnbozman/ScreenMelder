@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using ScreenMelder.Lib.ChangeDetection.Services;
 using ScreenMelder.Lib.CommunicationsProxy;
 using ScreenMelder.Lib.Core.Services;
@@ -21,18 +22,36 @@ namespace ScreenMelder
         private readonly IConfigurationService _configurationService;
         private IOcrChangeDetectionService _ocrChangeDetectionService;
         private CommunicationProxy _communications;
+        private readonly ILogger<ScreenMelder> _logger;
+        private TextBox logTextBox;
 
-        public ScreenMelder(ServiceProvider ServiceProvider)
+        public ScreenMelder(ServiceProvider ServiceProvider, ILogger<ScreenMelder> logger, TextBox logTextBox)
         {
             _ServiceProvider = ServiceProvider;
             _configurationService = _ServiceProvider.GetRequiredService<IConfigurationService>();
             _screenCaptureFactory = new ScreenCaptureFactory(_ServiceProvider.GetRequiredService<IScreenCaptureService>());
             _captureTargetStrategy = new CaptureTargetContext();
+            _logger = logger;
+
             InitializeComponent();
+
+
+            // 
+            // logTextBox
+            // 
+            logTab.Controls.Add(logTextBox);
+            this.logTextBox = logTextBox;
+            this.logTextBox.Location = new Point(6, 5);
+            this.logTextBox.Multiline = true;
+            this.logTextBox.Name = "logTextBox";
+            this.logTextBox.Size = new Size(527, 364);
+            this.logTextBox.TabIndex = 0;
+
             ocrROIOptions.Items.Add(new CaptureTypeOption { Label = "Screen", Value = CaptureType.SCREEN });
             // ocrROIOptions.Items.Add(new CaptureTypeOption { Label = "Application", Value = CaptureType.APPLICATION });
             ocrROIOptions.SelectedIndex = 0;
             LoadCaptureTargets();
+
         }
 
         private void LoadCaptureTargets()
@@ -67,7 +86,7 @@ namespace ScreenMelder
 
         private void host_connect_button_Click(object sender, EventArgs e)
         {
-
+            _logger.LogInformation("Test");
             ConnectCommunications();
         }
 

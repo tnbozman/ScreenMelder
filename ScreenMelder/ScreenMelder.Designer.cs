@@ -57,11 +57,11 @@ namespace ScreenMelder
             stopOcrButton = new Button();
             ocrStartButton = new Button();
             logTab = new TabPage();
-            textBox1 = new TextBox();
             manualTab = new TabPage();
             manual_payload_label = new Label();
             manual_send_button = new Button();
             manual_textBox = new TextBox();
+            
             launch_roi_picker_button = new Button();
             ocr_roi_groupBox = new GroupBox();
             ocrROICaptureTargetOptions = new ComboBox();
@@ -334,7 +334,7 @@ namespace ScreenMelder
             // 
             // logTab
             // 
-            logTab.Controls.Add(textBox1);
+            
             logTab.Location = new Point(4, 29);
             logTab.Name = "logTab";
             logTab.Padding = new Padding(3);
@@ -342,14 +342,7 @@ namespace ScreenMelder
             logTab.TabIndex = 1;
             logTab.Text = "Log";
             logTab.UseVisualStyleBackColor = true;
-            // 
-            // textBox1
-            // 
-            textBox1.Location = new Point(6, 5);
-            textBox1.Multiline = true;
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(527, 364);
-            textBox1.TabIndex = 0;
+
             // 
             // manualTab
             // 
@@ -490,7 +483,6 @@ namespace ScreenMelder
         private TabPage logTab;
         private Button manual_send_button;
         private TextBox manual_textBox;
-        private TextBox textBox1;
         private Button launch_roi_picker_button;
         private GroupBox ocr_roi_groupBox;
         private Label manual_payload_label;
