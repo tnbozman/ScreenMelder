@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Drawing;
 using ScreenMelder.Lib.Core.Util;
+using System.Text.Encodings.Web;
 
 namespace ScreenMelder.Lib.Core.Services
 {
@@ -50,7 +51,7 @@ namespace ScreenMelder.Lib.Core.Services
 
         private string SaveTemplate(JsonNode template, string outputPath)
         {
-            string jsonString = template.ToJsonString(new JsonSerializerOptions { WriteIndented = true });
+            string jsonString = template.ToJsonString(new JsonSerializerOptions { WriteIndented = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping });
             File.WriteAllText(outputPath, jsonString);
             return jsonString;
         }
