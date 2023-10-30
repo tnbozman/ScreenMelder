@@ -9,21 +9,51 @@ using System.Threading.Tasks;
 using System.Drawing;
 using ScreenMelder.Lib.Core.Util;
 using System.Text.Encodings.Web;
+using Microsoft.Extensions.Logging;
 
 namespace ScreenMelder.Lib.Core.Services
 {
     public class PayloadService: IPayloadService
     {
+        private readonly ILogger _logger;
+        private JsonNode jsonTemplate { get; set; }
+
+        public PayloadService(ILogger<PayloadService> logger) {
+            jsonTemplate = null;
+            _logger = logger;
+        } 
+
+        private void Load(string templatePath)
+        {
+            if(jsonTemplate == null)
+            {
+                _logger.LogInformation($"Loading payload template ({templatePath})");
+                jsonTemplate = LoadTemplate(templatePath);
+                _logger.LogInformation($"Loaded payload template");
+            }
+            
+        }
+
+        public void Save(string templatePath)
+        {
+            if(jsonTemplate != null)
+            {
+                _logger.LogInformation($"Saving payload template ({templatePath})");
+                SaveTemplate(TemplateToString(jsonTemplate), templatePath);
+                _logger.LogInformation($"Saved payload template");
+            }
+        }
+
         public string AddCounterToTemplate(string templatePath, string template, string captureCountLabel, int count)
         {
             var templateJson = StringToJson(template);
             SubstituteValueInTemplate(templateJson, captureCountLabel, count.ToString());
-            return SaveTemplate(templateJson, templatePath);
+            return TemplateToString(jsonTemplate);
         }
 
         public string PopulateTemplateWithRegions(string templatePath, List<RoiConfig> regions, Dictionary<string, string> ocrValues)
         {
-            var template = LoadTemplate(templatePath);
+            Load(templatePath);
 
             foreach (var region in regions)
             {
@@ -31,11 +61,11 @@ namespace ScreenMelder.Lib.Core.Services
                 {
                     // Assuming each RegionConfig has a property 'Value' you want to substitute into the template
                     // Replace this with whatever value or property you want from RegionConfig
-                    SubstituteValueInTemplate(template, region.Label, ocrValues[region.Label]);
+                    SubstituteValueInTemplate(jsonTemplate, region.Label, ocrValues[region.Label]);
                 }
             }
 
-            return SaveTemplate(template, templatePath);
+            return TemplateToString(jsonTemplate);
         }
         private JsonNode LoadTemplate(string templatePath)
         {
@@ -48,13 +78,16 @@ namespace ScreenMelder.Lib.Core.Services
             return JsonNode.Parse(jsonString);
         }
 
+        private string TemplateToString(JsonNode template)
+        {
+            return template.ToJsonString(new JsonSerializerOptions { WriteIndented = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping });
+        }
 
-        private string SaveTemplate(JsonNode template, string outputPath)
+        private string SaveTemplate(string template, string outputPath)
         {
             // https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/character-encoding
-            string jsonString = template.ToJsonString(new JsonSerializerOptions { WriteIndented = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping });
-            File.WriteAllText(outputPath, jsonString);
-            return jsonString;
+            File.WriteAllText(outputPath, template);
+            return template;
         }
 
         private void SubstituteValueInTemplate(JsonNode template, string keyPath, object value)
