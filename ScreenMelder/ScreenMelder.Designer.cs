@@ -245,7 +245,6 @@ namespace ScreenMelder
             overlayOutputGroupBox.TabIndex = 13;
             overlayOutputGroupBox.TabStop = false;
             overlayOutputGroupBox.Text = "Overlay Output";
-            overlayOutputGroupBox.Enter += groupBox1_Enter;
             // 
             // overlayOutputEnable
             // 
