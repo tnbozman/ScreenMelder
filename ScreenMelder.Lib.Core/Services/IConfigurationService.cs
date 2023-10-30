@@ -9,7 +9,7 @@ namespace ScreenMelder.Lib.Core.Services
 {
     public interface IConfigurationService
     {
-        Config ReadConfig(string path);
+        Config? ReadConfig(string path);
         void SaveConfig(Config config, string path);
 
     }

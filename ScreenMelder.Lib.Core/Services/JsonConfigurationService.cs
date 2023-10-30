@@ -22,11 +22,12 @@ namespace ScreenMelder.Lib.Core.Services
         public Config? ReadConfig(string path)
         {
             _logger.LogInformation($"Reading configuration {path}");
-            var jsonString = File.ReadAllText(path);
+            
             Config result = null;
 
             try
             {
+                var jsonString = File.ReadAllText(path);
                 result = JsonSerializer.Deserialize<Config>(jsonString, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
