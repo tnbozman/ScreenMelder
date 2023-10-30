@@ -9,7 +9,7 @@ namespace ScreenMelder.Lib.Core.Services
 {
     public interface IPayloadService
     {
-        string AddCounterToTemplate(string templatePath, string template, string captureCountLabel, int count);
+        string AddCounterToTemplate(string captureCountLabel, int count);
         string PopulateTemplateWithRegions(string templatePath, List<RoiConfig> regions, Dictionary<string, string> ocrValues);
     }
 }

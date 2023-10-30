@@ -44,10 +44,9 @@ namespace ScreenMelder.Lib.Core.Services
             }
         }
 
-        public string AddCounterToTemplate(string templatePath, string template, string captureCountLabel, int count)
+        public string AddCounterToTemplate(string captureCountLabel, int count)
         {
-            var templateJson = StringToJson(template);
-            SubstituteValueInTemplate(templateJson, captureCountLabel, count.ToString());
+            SubstituteValueInTemplate(jsonTemplate, captureCountLabel, count.ToString());
             return TemplateToString(jsonTemplate);
         }
 

@@ -74,7 +74,7 @@ namespace ScreenMelder.Lib.Core.Services
             captureThread = new Thread(Process);
             captureThread.IsBackground = true;
             captureThread.Start();
-            return result;
+            return true;
         }
 
         private void Process(object input)
@@ -115,10 +115,11 @@ namespace ScreenMelder.Lib.Core.Services
                             // add counter if specified by the ui
                             if (!string.IsNullOrEmpty(captureCountLabel))
                             {
-                                payload = _payloadService.AddCounterToTemplate(templatePath, payload, captureCountLabel, counter);
+                                payload = _payloadService.AddCounterToTemplate(captureCountLabel, counter);
                             }
                             _commsProxy.SendJson(payload);
                             counter++;
+                            previousPayload = payload;
                         }
                         
                     } 
