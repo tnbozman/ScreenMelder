@@ -51,6 +51,7 @@ namespace ScreenMelder.Lib.Core.Services
 
         private string SaveTemplate(JsonNode template, string outputPath)
         {
+            // https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/character-encoding
             string jsonString = template.ToJsonString(new JsonSerializerOptions { WriteIndented = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping });
             File.WriteAllText(outputPath, jsonString);
             return jsonString;

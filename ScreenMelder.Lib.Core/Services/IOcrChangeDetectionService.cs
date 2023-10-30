@@ -8,7 +8,7 @@ namespace ScreenMelder.Lib.Core.Services
 {
     public interface IOcrChangeDetectionService
     {
-        void Start(string configPath, string templatePath, string overlayOutputPath, int period, string captureCountLabel);
+        bool Start(string configPath, string templatePath, string overlayOutputPath, int period, string captureCountLabel);
         void Stop();
     }
 }

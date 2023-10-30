@@ -10,6 +10,7 @@ using ScreenMelder.Lib.ScreenCapture.Services;
 using ScreenMelder.Lib.ScreenCapture.Services.CaptureTarget;
 using ScreenMelder.Models;
 using System;
+using System.Security.Policy;
 using System.Text.Json;
 
 namespace ScreenMelder
@@ -86,7 +87,7 @@ namespace ScreenMelder
 
         private void host_connect_button_Click(object sender, EventArgs e)
         {
-            _logger.LogInformation("Test");
+            
             ConnectCommunications();
         }
 
@@ -94,7 +95,6 @@ namespace ScreenMelder
         {
             if (_communications == null)
             {
-                Uri commsUri = new Uri($"tcp://{host_input.Text}:{port_input.Text}");
                 _communications = CreateCommunications();
             }
 
@@ -104,12 +104,20 @@ namespace ScreenMelder
                 _communications.SetCleanupRegex(string.IsNullOrEmpty(ocrPayloadRegex.Text) ? null : ocrPayloadRegex.Text);
                 host_connect_button.Enabled = _communications.IsConnected;
                 host_connect_button.Enabled = !host_connect_button.Enabled;
+                _logger.LogInformation($"Connected");
             }
+        }
+
+        private string BuildUriString(string protocol, string host, string port)
+        {
+            return $"{protocol}://{host}:{port}";
         }
 
         private CommunicationProxy CreateCommunications()
         {
-            Uri commsUri = new Uri($"tcp://{host_input.Text}:{port_input.Text}");
+            var uri = BuildUriString("tcp", host_input.Text, port_input.Text);
+            _logger.LogInformation($"Attempting to connect to {uri}");
+            Uri commsUri = new Uri(uri);
             return new CommunicationProxy(commsUri);
         }
 
@@ -126,9 +134,16 @@ namespace ScreenMelder
                                                                         _configurationService,
                                                                         _ServiceProvider.GetRequiredService<IChangeDetectionService>(),
                                                                         _ServiceProvider.GetRequiredService<IPayloadService>(),
-                                                                        _communications);
+                                                                        _communications,
+                                                                        _ServiceProvider.GetRequiredService<ILogger<OcrChangeDetectionService>>());
+            _logger.LogInformation($"Starting OCR Change Detection");
+            var result = _ocrChangeDetectionService.Start(BuildPath(configPath.Text), BuildPath(payloadTemplatePath.Text), overlayOutputEnable.Checked ? BuildPath(overlayOutputPath.Text) : null, int.Parse(pollingPeriod.Value.ToString()), captureCount.Text);
 
-            _ocrChangeDetectionService.Start(BuildPath(configPath.Text), BuildPath(payloadTemplatePath.Text), overlayOutputEnable.Checked ? BuildPath(overlayOutputPath.Text) : null, int.Parse(pollingPeriod.Value.ToString()), captureCount.Text);
+            if (!result)
+            {
+                stopOcrButton_Click(null, null);
+            }
+            
         }
 
         private string BuildPath(string path)
@@ -143,25 +158,22 @@ namespace ScreenMelder
             ocrStartButton.Enabled = true;
             ocrStartButton.ForeColor = Color.Black;
             _ocrChangeDetectionService.Stop();
+            _logger.LogInformation($"Stopping OCR Change Detection");
         }
 
         private void manual_send_button_Click(object sender, EventArgs e)
         {
+            _logger.LogInformation($"Manually sending payload");
             _communications.SendJson(manual_textBox.Text);
         }
 
         private void host_disconnect_button_Click(object sender, EventArgs e)
         {
+            _logger.LogInformation($"Communications Disconnecting");
             _communications.Disconnect();
             host_connect_button.Enabled = true;
             host_disconnect_button.Enabled = false;
         }
-
-        private void groupBox1_Enter(object sender, EventArgs e)
-        {
-
-        }
-
         private void ocrPayloadRegex_TextChanged(object sender, EventArgs e)
         {
             if(_communications != null)
