@@ -46,5 +46,17 @@ namespace ScreenMelder.Properties {
                 this["configPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("output/overlay.png")]
+        public string overlayPath {
+            get {
+                return ((string)(this["overlayPath"]));
+            }
+            set {
+                this["overlayPath"] = value;
+            }
+        }
     }
 }

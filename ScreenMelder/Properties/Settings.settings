@@ -8,5 +8,8 @@
     <Setting Name="configPath" Type="System.String" Scope="User">
       <Value Profile="(Default)">config/config.json</Value>
     </Setting>
+    <Setting Name="overlayPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">output/overlay.png</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

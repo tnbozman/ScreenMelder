@@ -28,6 +28,7 @@ namespace ScreenMelder
         private TextBox logTextBox;
         private string configPath;
         private string payloadPath;
+        private string overlayPath;
 
         public ScreenMelder(ServiceProvider ServiceProvider, ILogger<ScreenMelder> logger, TextBox logTextBox)
         {
@@ -39,6 +40,8 @@ namespace ScreenMelder
             _logger = logger;
             configPath = BuildPath(Properties.Settings.Default.configPath);
             payloadPath = BuildPath(Properties.Settings.Default.payloadPath);
+            overlayPath = BuildPath(Properties.Settings.Default.overlayPath);
+
 
             InitializeComponent();
 
@@ -55,7 +58,7 @@ namespace ScreenMelder
             this.logTextBox.Name = "logTextBox";
             this.logTextBox.Size = new Size(527, 364);
             this.logTextBox.TabIndex = 0;
-
+            this.logTextBox.ScrollBars = ScrollBars.Vertical;
             ocrROIOptions.Items.Add(new CaptureTypeOption { Label = "Screen", Value = CaptureType.SCREEN });
             // ocrROIOptions.Items.Add(new CaptureTypeOption { Label = "Application", Value = CaptureType.APPLICATION });
             ocrROIOptions.SelectedIndex = 0;
@@ -120,8 +123,8 @@ namespace ScreenMelder
                 else
                 {
                     _logger.LogInformation($"Failed to connect");
-                } 
-                 
+                }
+
             }
         }
 
@@ -154,7 +157,7 @@ namespace ScreenMelder
                                                                         _communications,
                                                                         _ServiceProvider.GetRequiredService<ILogger<OcrChangeDetectionService>>());
             _logger.LogInformation($"Starting OCR Change Detection");
-            var result = _ocrChangeDetectionService.Start(configPath, payloadPath, overlayOutputEnable.Checked ? BuildPath(overlayOutputPath.Text) : null, int.Parse(pollingPeriod.Value.ToString()), captureCount.Text);
+            var result = _ocrChangeDetectionService.Start(configPath, payloadPath, overlayOutputEnable.Checked ? overlayPath : null, int.Parse(pollingPeriod.Value.ToString()), captureCount.Text);
 
             if (!result)
             {

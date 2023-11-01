@@ -15,8 +15,7 @@ namespace ScreenMelder.Lib.Core.Util
         {
             if(dataType == DataType.BOOLEAN) {
                 bool result;
-                input = Regex.Replace(input, @"^(? !true$| false$).*", "");
-                if (Boolean.TryParse(input, out result))
+                if (Boolean.TryParse(Regex.Replace(input, @"^(? !true$| false$).*", ""), out result))
                 {
                     
                     return result.ToString();
@@ -26,19 +25,19 @@ namespace ScreenMelder.Lib.Core.Util
                 return input;
             }else if(dataType == DataType.FLOAT)
             {
-                input = Regex.Replace(input, @"[^\d.-]+", "");
+  
                 float result;
-                if(float.TryParse(input, out result))
+                if(float.TryParse(Regex.Replace(input, @"[^\d.-]+", ""), out result))
                 {
-                    return result.ToString();
+
+                    return (input.ToLower().Contains("l") ? result * -1 : result).ToString();
                 }
             }else if(dataType == DataType.INTEGER)
             {
                 int result;
-                input = Regex.Replace(input, @"[^\d.-]+", "");
-                if (int.TryParse(input, out result))
+                if (int.TryParse(Regex.Replace(input, @"[^\d.-]+", ""), out result))
                 {
-                    return result.ToString();
+                    return (input.ToLower().Contains("l") ? result * -1 : result).ToString();
                 }
             }
 
