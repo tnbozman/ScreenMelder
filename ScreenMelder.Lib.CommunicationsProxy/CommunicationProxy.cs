@@ -1,4 +1,5 @@
-﻿using ScreenMelder.Lib.CommunicationsProxy.Strategies;
+﻿using Microsoft.Extensions.Logging;
+using ScreenMelder.Lib.CommunicationsProxy.Strategies;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace ScreenMelder.Lib.CommunicationsProxy
 {
     public class CommunicationProxy
     {
+        private readonly ILogger<CommunicationProxy> _logger;
         public string CleanupRegex => _communicationStrategy.CleanupRegex;
         public void SetCleanupRegex(string regex)
         {
@@ -18,16 +20,18 @@ namespace ScreenMelder.Lib.CommunicationsProxy
         private readonly ICommunicationStrategy _communicationStrategy;
 
         public bool IsConnected { get; private set; }
-        public CommunicationProxy(Uri targetUri)
+        public CommunicationProxy(Uri targetUri, ILogger<CommunicationProxy> logger)
         {
+            _logger = logger;
             // Determine which communication strategy to use based on the URI scheme.
             if (targetUri.Scheme.Equals("http", StringComparison.OrdinalIgnoreCase))
             {
-                _communicationStrategy = new HttpPostCommunicationStrategy(targetUri);
+                // add
+                _communicationStrategy = new HttpPostCommunicationStrategy(targetUri, _logger);
             }
             else if (targetUri.Scheme.Equals("tcp", StringComparison.OrdinalIgnoreCase))
             {
-                _communicationStrategy = new TcpCommunicationStrategy(targetUri.Host, targetUri.Port);
+                _communicationStrategy = new TcpCommunicationStrategy(targetUri.Host, targetUri.Port, _logger);
             }
             else
             {

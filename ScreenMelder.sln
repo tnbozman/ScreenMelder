@@ -11,9 +11,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScreenMelder.Lib.ScreenCapt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScreenMelder.Lib.Core", "ScreenMelder.Lib.Core\ScreenMelder.Lib.Core.csproj", "{F8BDC68D-8DD9-4263-A18A-C1A318A93F31}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScreenMelder.Lib.ChangeDetection", "ScreenMelder.Lib.ChangeDetection\ScreenMelder.Lib.ChangeDetection.csproj", "{37CB8E37-DE4A-443B-9585-5DDD596099C4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScreenMelder.Lib.ChangeDetection", "ScreenMelder.Lib.ChangeDetection\ScreenMelder.Lib.ChangeDetection.csproj", "{37CB8E37-DE4A-443B-9585-5DDD596099C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScreenMelder.Lib.OCR", "ScreenMelder.Lib.OCR\ScreenMelder.Lib.OCR.csproj", "{75A77A5A-BCA4-43A6-92CC-BF58D6A26B9C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScreenMelder.Lib.OCR", "ScreenMelder.Lib.OCR\ScreenMelder.Lib.OCR.csproj", "{75A77A5A-BCA4-43A6-92CC-BF58D6A26B9C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{83D16C7F-FDC2-4E99-ABA6-3E89170355B3}"
+	ProjectSection(SolutionItems) = preProject
+		logging.md = logging.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

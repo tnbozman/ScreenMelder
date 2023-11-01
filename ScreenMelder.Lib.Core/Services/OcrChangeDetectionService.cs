@@ -1,4 +1,5 @@
-﻿using ScreenMelder.Lib.ChangeDetection.Services;
+﻿using Microsoft.Extensions.Logging;
+using ScreenMelder.Lib.ChangeDetection.Services;
 using ScreenMelder.Lib.CommunicationsProxy;
 using ScreenMelder.Lib.Core.Models;
 using ScreenMelder.Lib.Core.Util;
@@ -25,6 +26,7 @@ namespace ScreenMelder.Lib.Core.Services
         private readonly IChangeDetectionService _changeDetectionService;
         private readonly IPayloadService _payloadService;
         private readonly CommunicationProxy _commsProxy;
+        private readonly ILogger<OcrChangeDetectionService> _logger;
         private bool running = false;
         private Thread captureThread;
         private Config? config;
@@ -39,17 +41,25 @@ namespace ScreenMelder.Lib.Core.Services
                                             IConfigurationService configService, 
                                             IChangeDetectionService changeDetectionService,
                                             IPayloadService payloadService,
-                                            CommunicationProxy commsProxy) {
+                                            CommunicationProxy commsProxy,
+                                            ILogger<OcrChangeDetectionService> logger) {
             _captureFactory = captureFactory;
             _ocrService = ocrService;
             _configService = configService;
             _changeDetectionService = changeDetectionService;
             _payloadService = payloadService;
             _commsProxy = commsProxy;
+            _logger = logger;
         }
-        public void Start(string configPath, string templatePath, string overlayOutputPath, int period, string captureCountLabel)
+        public bool Start(string configPath, string templatePath, string overlayOutputPath, int period, string captureCountLabel)
         {
+            var result = false;
             config = _configService.ReadConfig(configPath);
+            if(config == null)
+            {
+                _logger.LogError("Failed to read configuations. Start aborted");
+                return result;
+            }
             this.templatePath = templatePath;
             this.overlayOutputPath = overlayOutputPath;
             this.period = period;
@@ -64,7 +74,7 @@ namespace ScreenMelder.Lib.Core.Services
             captureThread = new Thread(Process);
             captureThread.IsBackground = true;
             captureThread.Start();
-
+            return true;
         }
 
         private void Process(object input)
@@ -79,6 +89,7 @@ namespace ScreenMelder.Lib.Core.Services
 
                 if (_changeDetectionService.HasChanged(triggerCapture, ref previousTrigger))
                 {
+                    _logger.LogInformation("Screen Change Detected");
                     var ocrValues = new Dictionary<string, string>();
                     foreach (var region in config.Regions)
                     {
@@ -89,14 +100,15 @@ namespace ScreenMelder.Lib.Core.Services
                             result = result.Replace("\n", "").TrimEnd();
                             result = DataTypeParser.Validate(result, region.DataType);
                         }
-                       
-                        Console.WriteLine($"{region.Label}: {result}");
+
+                        _logger.LogInformation($"{region.Label}: {result}");
                         ocrValues.Add(region.Label, result);
                     }
                     
                     if(ocrValues.All(a => a.Value != null && a.Value.Length > 0))
                     {
-                   
+                        _logger.LogInformation("All OCR reads successful");
+
                         // need to pull counter into a new payload service function that can be used by itself
                         ocrValues.Add(captureCountLabel, counter.ToString());
                         var payload = _payloadService.PopulateTemplateWithRegions(templatePath, config.Regions, ocrValues);
@@ -105,10 +117,11 @@ namespace ScreenMelder.Lib.Core.Services
                             // add counter if specified by the ui
                             if (!string.IsNullOrEmpty(captureCountLabel))
                             {
-                                payload = _payloadService.AddCounterToTemplate(templatePath, payload, captureCountLabel, counter);
+                                payload = _payloadService.AddCounterToTemplate(captureCountLabel, counter);
                             }
                             _commsProxy.SendJson(payload);
                             counter++;
+                            previousPayload = payload;
                         }
                         
                     } 

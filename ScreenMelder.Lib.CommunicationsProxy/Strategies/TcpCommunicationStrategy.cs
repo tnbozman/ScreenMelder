@@ -1,4 +1,5 @@
-﻿using ScreenMelder.Lib.CommunicationsProxy.Utils;
+﻿using Microsoft.Extensions.Logging;
+using ScreenMelder.Lib.CommunicationsProxy.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,12 +17,14 @@ namespace ScreenMelder.Lib.CommunicationsProxy.Strategies
         private readonly string _serverIp;
         private readonly int _serverPort;
         private readonly int _threadTimeout = 1000;
+        private readonly ILogger _logger;
         private Socket client { get; set; }
         public string CleanupRegex { get; set; }
 
         // private readonly ILogger<TcpCommunicationStrategy> _logger;
-        public TcpCommunicationStrategy(string serverIp, int serverPort)
+        public TcpCommunicationStrategy(string serverIp, int serverPort, ILogger logger)
         {
+            _logger = logger;
             _serverIp = serverIp;
             _serverPort = serverPort;
             CleanupRegex = null;
@@ -38,16 +41,15 @@ namespace ScreenMelder.Lib.CommunicationsProxy.Strategies
             if (!IPAddress.TryParse(_serverIp, out ipAddress))
             {
                 var errorMsg = "IP Address is invalid";
-                // _logger.LogDebug(errorMsg);
-                // OnErrorDetected(errorMsg);
+                _logger.LogError(errorMsg);
+
                 return false;
             }
 
             if (_serverPort < 1 || _serverPort > 65535)
             {
                 var errorMsg = "Port is out of range (1 to 65535)";
-                //_logger.LogDebug(errorMsg);
-                //OnErrorDetected(errorMsg);
+                _logger.LogError(errorMsg);
                 return false;
             }
 
@@ -62,16 +64,16 @@ namespace ScreenMelder.Lib.CommunicationsProxy.Strategies
 
                 // Connect to the remote endpoint.  
                 client.Connect(remoteEP);
-               // Status = Status.Connected;
-                //_logger.LogDebug($"Connection to {address}:{port} successful");
-                //OnClientConnected();
+
+                _logger.LogInformation($"Connection to {ipAddress}:{_serverPort} successful");
+
 
                 //StartThreads();
             }
             catch (Exception ex)
             {
-                //_logger.LogError("Failed to connect to GSPro Connect: Make sure GSPro Connect has been started and is waiting for connection");
-                //OnErrorDetected($"Failed to connect to GSPro: {ex.Message}");
+                _logger.LogError("Failed to connect to Connect. Make sure the TCP Server has been started and is waiting for connection");
+
                 return false;
             }
 
@@ -101,23 +103,23 @@ namespace ScreenMelder.Lib.CommunicationsProxy.Strategies
                     {
                         byte[] jsonBytes = Encoding.UTF8.GetBytes(unprettyJson);
                         client.Send(jsonBytes);
-                        Console.WriteLine("JSON payload sent via TCP: " + unprettyJson);
+                        _logger.LogInformation("JSON payload sent via TCP: " + unprettyJson);
                     }
                     else
                     {
-                        Console.WriteLine("JSON payload was not json: " + json);
+                        _logger.LogError("JSON payload was not json: " + json);
                     }
                     
                 }
                 else
                 {
-                    Console.WriteLine("JSON payload sent via TCP: " + json);
+                    _logger.LogError("TCP client is not connected");
                 }
                 
             }
             catch (Exception ex)
             {
-                Console.WriteLine("TCP Communication Error: " + ex.Message);
+                _logger.LogError("TCP Communication Error: ", ex);
             }
         }
 

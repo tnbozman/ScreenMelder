@@ -4,6 +4,8 @@ using System;
 using ScreenMelder.Lib.ScreenCapture.Services;
 using ScreenMelder.Lib.OCR.Services;
 using ScreenMelder.Lib.ChangeDetection.Services;
+using Microsoft.Extensions.Logging;
+using ScreenMelder.Lib.Core.Logging;
 
 namespace ScreenMelder
 {
@@ -19,20 +21,23 @@ namespace ScreenMelder
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            // create the service collection
-            var services = new ServiceCollection();
-            // configure the service collection and service provider
-            ConfigureServices(services);
-            ServiceProvider serviceProvider = services.BuildServiceProvider();
+            
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new ScreenMelder(serviceProvider));
+            TextBox logTextBox = new TextBox();
+            // create the service collection
+            var services = new ServiceCollection();
+            // configure the service collection and service provider
+            ConfigureServices(services, logTextBox);
+            ServiceProvider serviceProvider = services.BuildServiceProvider();
+            ILogger<ScreenMelder> logger = (ILogger<ScreenMelder>)serviceProvider.GetService<ILoggerFactory>().CreateLogger<ScreenMelder>();
+            Application.Run(new ScreenMelder(serviceProvider, logger, logTextBox));
         }
 
-        private static void ConfigureServices(ServiceCollection services)
+        private static void ConfigureServices(ServiceCollection services, TextBox logTextBox)
         {
-            //services.AddLogging(configure => configure.SetMinimumLevel(LogLevel.Error).AddConsole());
+            services.AddLogging(configure => configure.SetMinimumLevel(LogLevel.Information).AddConsole().AddProvider(new TextBoxLoggerProvider(logTextBox)));
             services.AddTransient<IConfigurationService, JsonConfigurationService>();
             services.AddTransient<IScreenCaptureService, ScreenCaptureService>();
             services.AddTransient<IPayloadService, PayloadService>();
