@@ -1,10 +1,10 @@
 # ScreenMelder User Guide
 
-## User Interface Layout 
+## User Interface Layout
 
 The user interface has tabs separating concerns of the application.
 
-[Layout](./images/layout.png)
+![Layout](./images/layout.png)
 
 **OCR Tab** contains the core settings for controlling the execution of the application
 **OCR Configuration** allows you to view and manually manipulate the Region of Interest for OCR
@@ -38,45 +38,45 @@ OCR configuration has two setup methods; a graphical tool that allows you to dra
     {
       "Label": "data.ballspeed",  # json dot path which maps to a key the payload
       "X": 642,                   # top left point (X,Y)
-      "Y": 936,                    
+      "Y": 936,
       "Width": 133,               # width from top left point (going right)
       "Height": 54,               # height from top left point (going down)
-      "DataType": 2               # expected data type of the OCR (1: string, 2: float, 3: boolean, 4: Integer) 
+      "DataType": 2               # expected data type of the OCR (1: string, 2: float, 3: boolean, 4: Integer)
     }
   ]
 }
 
 #### Region of Interest Picker
 
-[fsgolf](./images/fsgolf.png)
+![fsgolf](./images/fsgolf.png)
 
-[overlay](./images/overlay.png)
+![overlay](./images/overlay.png)
 
-[ballspeed](./images/ballspeed.png)
-[launch-angle](./images/launch-angle.png)
-[ballpath](./images/ballpath.png)
-[backspin](./images/backspin.png)
-[sidespin](./images/sidespin.png)
-[trigger](./images/trigger.png)
+![ballspeed](./images/ballspeed.png)
+![launch-angle](./images/launch-angle.png)
+![ballpath](./images/ballpath.png)
+![backspin](./images/backspin.png)
+![sidespin](./images/sidespin.png)
+![trigger](./images/trigger.png)
 
-[overlay](./images/overlay.png)
+![overlay](./images/overlay.png)
 
 #### Manual Setup
 
-[ocr-manaual](./images/ocr-config-manual.png)
+![ocr-manaual](./images/ocr-config-manual.png)
 
 ### Payload Configuration
 
-[ocr-manaual](./images/payload-config.png)
+![ocr-manaual](./images/payload-config.png)
 
 ### Output Overlay
 
-[overlay](./images/overlay.png)
+![overlay](./images/overlay.png)
 
 ### Payload Cleanup Regex
 
 Provides the ability to provide a regex for which all matches are replaced by a blank character.
-'\s+' removed all pretty formating to ensure the payload is compact for transmission. 
+'\s+' removed all pretty formating to ensure the payload is compact for transmission.
 
 ### Capture Count Label
 
@@ -106,6 +106,3 @@ Display to application log to assist with debugging.
 
 Allows a manual payload to be sent to a TCP server to assist with setup and configuration.
 Will likely be removed in the future.
-
-
-

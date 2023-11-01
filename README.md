@@ -6,7 +6,7 @@ The tool allows you to configure screen capture regions of interest, run ocr on 
 
 ## Usage
 
-
+[User Guide](./docs/guide.md)
 
 ## Development
 
