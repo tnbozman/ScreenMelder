@@ -89,6 +89,7 @@ namespace ScreenMelder.Lib.Core.Services
 
                 if (_changeDetectionService.HasChanged(triggerCapture, ref previousTrigger))
                 {
+                    _logger.LogInformation("Screen Change Detected");
                     var ocrValues = new Dictionary<string, string>();
                     foreach (var region in config.Regions)
                     {
@@ -99,14 +100,15 @@ namespace ScreenMelder.Lib.Core.Services
                             result = result.Replace("\n", "").TrimEnd();
                             result = DataTypeParser.Validate(result, region.DataType);
                         }
-                       
-                        Console.WriteLine($"{region.Label}: {result}");
+
+                        _logger.LogInformation($"{region.Label}: {result}");
                         ocrValues.Add(region.Label, result);
                     }
                     
                     if(ocrValues.All(a => a.Value != null && a.Value.Length > 0))
                     {
-                   
+                        _logger.LogInformation("All OCR reads successful");
+
                         // need to pull counter into a new payload service function that can be used by itself
                         ocrValues.Add(captureCountLabel, counter.ToString());
                         var payload = _payloadService.PopulateTemplateWithRegions(templatePath, config.Regions, ocrValues);

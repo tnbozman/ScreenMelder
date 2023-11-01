@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,9 +11,11 @@ namespace ScreenMelder.Lib.CommunicationsProxy.Strategies
     {
         public string CleanupRegex { get; set;  }
         private readonly Uri _targetUri;
+        private readonly ILogger _logger;
 
-        public HttpPostCommunicationStrategy(Uri targetUri)
+        public HttpPostCommunicationStrategy(Uri targetUri, ILogger logger)
         {
+            _logger = logger;
             _targetUri = targetUri;
             CleanupRegex = null;
         }
@@ -45,12 +48,12 @@ namespace ScreenMelder.Lib.CommunicationsProxy.Strategies
 
                     response.EnsureSuccessStatusCode(); // Ensure a successful HTTP response.
 
-                    Console.WriteLine("JSON payload sent via HTTP POST: " + json);
+                    _logger.LogInformation("JSON payload sent via HTTP POST: " + json);
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("HTTP POST Communication Error: " + ex.Message);
+                _logger.LogError("HTTP POST Communication Error", ex);
             }
         }
     }

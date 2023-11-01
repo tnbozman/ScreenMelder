@@ -110,9 +110,18 @@ namespace ScreenMelder
             {
                 _communications.Connect();
                 _communications.SetCleanupRegex(string.IsNullOrEmpty(ocrPayloadRegex.Text) ? null : ocrPayloadRegex.Text);
-                host_connect_button.Enabled = _communications.IsConnected;
-                host_connect_button.Enabled = !host_connect_button.Enabled;
-                _logger.LogInformation($"Connected");
+                host_connect_button.Enabled = !_communications.IsConnected;
+                host_disconnect_button.Enabled = !host_connect_button.Enabled;
+
+                if (_communications.IsConnected)
+                {
+                    _logger.LogInformation($"Connected");
+                }
+                else
+                {
+                    _logger.LogInformation($"Failed to connect");
+                } 
+                 
             }
         }
 
@@ -126,7 +135,7 @@ namespace ScreenMelder
             var uri = BuildUriString("tcp", host_input.Text, port_input.Text);
             _logger.LogInformation($"Attempting to connect to {uri}");
             Uri commsUri = new Uri(uri);
-            return new CommunicationProxy(commsUri);
+            return new CommunicationProxy(commsUri, _ServiceProvider.GetRequiredService<ILogger<CommunicationProxy>>());
         }
 
         private void ocrStartButton_Click(object sender, EventArgs e)
