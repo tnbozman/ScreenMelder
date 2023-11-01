@@ -10,6 +10,7 @@ using System.Drawing;
 using ScreenMelder.Lib.Core.Util;
 using System.Text.Encodings.Web;
 using Microsoft.Extensions.Logging;
+using System.Runtime.CompilerServices;
 
 namespace ScreenMelder.Lib.Core.Services
 {
@@ -23,13 +24,29 @@ namespace ScreenMelder.Lib.Core.Services
             _logger = logger;
         } 
 
-        private void Load(string templatePath)
+        public string Load(string templatePath)
         {
             if(jsonTemplate == null)
             {
                 _logger.LogInformation($"Loading payload template ({templatePath})");
                 jsonTemplate = LoadTemplate(templatePath);
                 _logger.LogInformation($"Loaded payload template");
+            }
+            return TemplateToString(jsonTemplate);
+
+
+        }
+
+        public bool Save(string templatePath, string jsonString) {
+            try
+            {
+                jsonTemplate = StringToJson(jsonString);
+                SaveTemplate(TemplateToString(jsonTemplate), templatePath);
+                return true;
+            }catch (Exception ex)
+            {
+                _logger.LogError("Failed to save", ex);
+                return false;
             }
             
         }
@@ -74,6 +91,7 @@ namespace ScreenMelder.Lib.Core.Services
 
         private JsonNode StringToJson(string jsonString)
         {
+
             return JsonNode.Parse(jsonString);
         }
 

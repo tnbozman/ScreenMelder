@@ -11,6 +11,9 @@ namespace ScreenMelder.Lib.Core.Services
     {
         Config? ReadConfig(string path);
         void SaveConfig(Config config, string path);
+        void SaveConfigFromString(string jsonString, string path);
+
+        string ReadConfigToString(string path);
 
     }
 }

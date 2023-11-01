@@ -21,21 +21,29 @@ namespace ScreenMelder
         private readonly ScreenCaptureFactory _screenCaptureFactory;
         private readonly CaptureTargetContext _captureTargetStrategy;
         private readonly IConfigurationService _configurationService;
+        private readonly IPayloadService _payloadService;
         private IOcrChangeDetectionService _ocrChangeDetectionService;
         private CommunicationProxy _communications;
         private readonly ILogger<ScreenMelder> _logger;
         private TextBox logTextBox;
+        private string configPath;
+        private string payloadPath;
 
         public ScreenMelder(ServiceProvider ServiceProvider, ILogger<ScreenMelder> logger, TextBox logTextBox)
         {
             _ServiceProvider = ServiceProvider;
             _configurationService = _ServiceProvider.GetRequiredService<IConfigurationService>();
+            _payloadService = _ServiceProvider.GetRequiredService<IPayloadService>();
             _screenCaptureFactory = new ScreenCaptureFactory(_ServiceProvider.GetRequiredService<IScreenCaptureService>());
             _captureTargetStrategy = new CaptureTargetContext();
             _logger = logger;
+            configPath = BuildPath(Properties.Settings.Default.configPath);
+            payloadPath = BuildPath(Properties.Settings.Default.payloadPath);
 
             InitializeComponent();
 
+            payloadTextBox.Text = _payloadService.Load(payloadPath);
+            configTextBox.Text = _configurationService.ReadConfigToString(configPath);
 
             // 
             // logTextBox
@@ -87,7 +95,7 @@ namespace ScreenMelder
 
         private void host_connect_button_Click(object sender, EventArgs e)
         {
-            
+
             ConnectCommunications();
         }
 
@@ -133,17 +141,17 @@ namespace ScreenMelder
                                                                         _ServiceProvider.GetRequiredService<IOcrService>(),
                                                                         _configurationService,
                                                                         _ServiceProvider.GetRequiredService<IChangeDetectionService>(),
-                                                                        _ServiceProvider.GetRequiredService<IPayloadService>(),
+                                                                        _payloadService,
                                                                         _communications,
                                                                         _ServiceProvider.GetRequiredService<ILogger<OcrChangeDetectionService>>());
             _logger.LogInformation($"Starting OCR Change Detection");
-            var result = _ocrChangeDetectionService.Start(BuildPath(configPath.Text), BuildPath(payloadTemplatePath.Text), overlayOutputEnable.Checked ? BuildPath(overlayOutputPath.Text) : null, int.Parse(pollingPeriod.Value.ToString()), captureCount.Text);
+            var result = _ocrChangeDetectionService.Start(configPath, payloadPath, overlayOutputEnable.Checked ? BuildPath(overlayOutputPath.Text) : null, int.Parse(pollingPeriod.Value.ToString()), captureCount.Text);
 
             if (!result)
             {
                 stopOcrButton_Click(null, null);
             }
-            
+
         }
 
         private string BuildPath(string path)
@@ -176,10 +184,32 @@ namespace ScreenMelder
         }
         private void ocrPayloadRegex_TextChanged(object sender, EventArgs e)
         {
-            if(_communications != null)
+            if (_communications != null)
             {
                 _communications.SetCleanupRegex(ocrPayloadRegex.Text);
             }
+        }
+
+        private void configEditCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            configTextBox.Enabled = configEditCheckBox.Checked;
+            configSaveButton.Enabled = configEditCheckBox.Checked;
+        }
+
+        private void payloadEditCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            payloadTextBox.Enabled = payloadEditCheckBox.Checked;
+            payloadSaveButton.Enabled = payloadEditCheckBox.Checked;
+        }
+
+        private void configSaveButton_Click(object sender, EventArgs e)
+        {
+            _configurationService.SaveConfigFromString(configTextBox.Text, configPath);
+        }
+
+        private void payloadSaveButton_Click(object sender, EventArgs e)
+        {
+            _payloadService.Save(payloadPath, payloadTextBox.Text);
         }
     }
 }

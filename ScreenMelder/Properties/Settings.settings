@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="ScreenMelder.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="payloadPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">config/payload.json</Value>
+    </Setting>
+    <Setting Name="configPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">config/config.json</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

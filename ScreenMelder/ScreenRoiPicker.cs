@@ -40,6 +40,18 @@ namespace ScreenMelder
             RefreshScreenshot();
             this.WindowState = FormWindowState.Maximized; // covers the entire screen
             this.FormBorderStyle = FormBorderStyle.None;
+
+            ControlDialog();
+        }
+
+        private void ControlDialog()
+        {
+            using (var dialog = new ScreenRoiPickerControl())
+            {
+                var result = dialog.ShowDialog();
+                
+            }
+
         }
 
         private void RefreshScreenshot()
@@ -77,6 +89,10 @@ namespace ScreenMelder
             else if (keyData == Keys.X)
             {
                 SaveConfig();
+                this.Close();
+            }
+            else if (keyData == Keys.Q)
+            {
                 this.Close();
             }
 
