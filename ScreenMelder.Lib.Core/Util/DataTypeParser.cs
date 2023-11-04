@@ -11,14 +11,14 @@ namespace ScreenMelder.Lib.Core.Util
     public class DataTypeParser
     {
 
-        public static string Validate(string input, DataType dataType)
+        public static object Validate(string input, DataType dataType)
         {
             if(dataType == DataType.BOOLEAN) {
                 bool result;
                 if (Boolean.TryParse(Regex.Replace(input, @"^(? !true$| false$).*", ""), out result))
                 {
                     
-                    return result.ToString();
+                    return result;
                 }
             }else if(dataType == DataType.STRING)
             {
@@ -30,14 +30,14 @@ namespace ScreenMelder.Lib.Core.Util
                 if(float.TryParse(Regex.Replace(input, @"[^\d.-]+", ""), out result))
                 {
 
-                    return (input.ToLower().Contains("l") ? result * -1 : result).ToString();
+                    return (input.ToLower().Contains("l") ? result * -1 : result);
                 }
             }else if(dataType == DataType.INTEGER)
             {
                 int result;
                 if (int.TryParse(Regex.Replace(input, @"[^\d.-]+", ""), out result))
                 {
-                    return (input.ToLower().Contains("l") ? result * -1 : result).ToString();
+                    return (input.ToLower().Contains("l") ? result * -1 : result);
                 }
             }
 

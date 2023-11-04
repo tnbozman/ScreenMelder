@@ -102,7 +102,8 @@ namespace ScreenMelder.Lib.CommunicationsProxy.Strategies
                     if(PayloadUtils.IsValidJson(json, out unprettyJson, CleanupRegex))
                     {
                         byte[] jsonBytes = Encoding.UTF8.GetBytes(unprettyJson);
-                        client.Send(jsonBytes);
+                        int num = client.Send(jsonBytes);
+                        _logger.LogInformation($"JSON payload sent via TCP (bytes: {num})");
                         _logger.LogInformation("JSON payload sent via TCP: " + unprettyJson);
                     }
                     else

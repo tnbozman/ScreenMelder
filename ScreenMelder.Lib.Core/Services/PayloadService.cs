@@ -63,11 +63,11 @@ namespace ScreenMelder.Lib.Core.Services
 
         public string AddCounterToTemplate(string captureCountLabel, int count)
         {
-            SubstituteValueInTemplate(jsonTemplate, captureCountLabel, count.ToString());
+            SubstituteValueInTemplate(jsonTemplate, captureCountLabel, count);
             return TemplateToString(jsonTemplate);
         }
 
-        public string PopulateTemplateWithRegions(string templatePath, List<RoiConfig> regions, Dictionary<string, string> ocrValues)
+        public string PopulateTemplateWithRegions(string templatePath, List<RoiConfig> regions, Dictionary<string, object> ocrValues)
         {
             Load(templatePath);
 

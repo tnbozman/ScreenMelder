@@ -90,27 +90,28 @@ namespace ScreenMelder.Lib.Core.Services
                 if (_changeDetectionService.HasChanged(triggerCapture, ref previousTrigger))
                 {
                     _logger.LogInformation("Screen Change Detected");
-                    var ocrValues = new Dictionary<string, string>();
+                    var ocrValues = new Dictionary<string, object>();
                     foreach (var region in config.Regions)
                     {
                         var regionCapture = captureService.CaptureRegion(new Rectangle(region.X, region.Y, region.Width, region.Height));
                         var result = _ocrService.ProcessImage(regionCapture);
+                        object parsedResult = null;
                         if(region.DataType != null)
                         {
                             result = result.Replace("\n", "").TrimEnd();
-                            result = DataTypeParser.Validate(result, region.DataType);
+                            parsedResult = DataTypeParser.Validate(result, region.DataType);
                         }
 
-                        _logger.LogInformation($"{region.Label}: {result}");
-                        ocrValues.Add(region.Label, result);
+                        _logger.LogInformation($"{region.Label}: {parsedResult}");
+                        ocrValues.Add(region.Label, parsedResult);
                     }
                     
-                    if(ocrValues.All(a => a.Value != null && a.Value.Length > 0))
+                    if(ocrValues.All(a => a.Value != null && a.Value.ToString().Length > 0))
                     {
                         _logger.LogInformation("All OCR reads successful");
 
                         // need to pull counter into a new payload service function that can be used by itself
-                        ocrValues.Add(captureCountLabel, counter.ToString());
+                        ocrValues.Add(captureCountLabel, counter);
                         var payload = _payloadService.PopulateTemplateWithRegions(templatePath, config.Regions, ocrValues);
                         // ignore duplicate reads
                         if(previousPayload != payload) {
